@@ -1,0 +1,31 @@
+{
+    "rules": [
+        {
+            "pattern": "https?:\/\/(www.)?youtu(be)?.\\S+",
+            "notification": true,
+            "application": "mpv",
+            "arguments":
+            [
+                "{{url}}"
+            ]
+        },
+        {
+            "pattern": "https?:\/\/(www.)?(g.e-|ex)hentai.org\\S*",
+            "notification": false,
+            "application": "firefox-nightly",
+            "arguments":
+            [
+                "{{url}}"
+            ]
+        },
+        {
+            "pattern": "\\S*",
+            "notification": false,
+            "application": "chromium",
+            "arguments":
+            [
+                "{{url}}"
+            ]
+        }
+    ]
+}
