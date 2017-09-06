@@ -14,7 +14,7 @@ else:
     url = sys.argv[1]
     Notify.init("choosedefault")
 
-    with open('/home/motoko/bin/choosedefault.json') as data_file:
+    with open('~/bin/choosedefault.json') as data_file:
         defaults = json.load(data_file)
 
     for rule in defaults["rules"]:
