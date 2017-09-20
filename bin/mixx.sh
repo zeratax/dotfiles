@@ -1,5 +1,10 @@
 #!/bin/bash
+
+# mixx.sh - puush-like functionality for mixtape.moe
+# Maintained by illu - Contact: illu@airmail.cc
 # https://gitgud.io/snippets/34
+# Requires Maim (https://github.com/naelstrof/maim) for screenshots
+
 
 ## OPTIONS
 
