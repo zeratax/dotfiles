@@ -61,11 +61,7 @@ set encoding=utf8
 set guifont=DroidSansMonoForPowerline\ Nerd\ Font:h11
 
 " Keybinds
+"   Format JSON data
+map <C-F6> :%!python -m json.tool<CR>
+"   NERDTree
 map <C-n> :NERDTreeToggle<CR>
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
-" Terminal 256 
-set t_Co=256
-hi Normal guibg=NONE ctermbg=NONE
