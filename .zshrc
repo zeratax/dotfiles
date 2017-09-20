@@ -95,7 +95,7 @@ alias screenrecord="ffmpeg -f alsa -ac 2 -i pulse -f x11grab -r 30 -s 1920x1080 
 
 # upload() {
 #   if [ $# -eq 0 ]; then echo "No arguments specified. "; return 1; fi
-#   scp "$1" "cockbox:/usr/share/nginx/html/files/$1"; echo "https://zera.tax/f/$1";
+#   scp "$1" "zera.tax:/usr/share/nginx/html/files/$1"; echo "https://zera.tax/f/$1";
 # }
 
 0x0() {
