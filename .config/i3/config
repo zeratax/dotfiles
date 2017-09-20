@@ -29,6 +29,15 @@ font pango:Source Code Pro for Powerline 10
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+# auto floating windows
+for_window [window_role="pop-up"] floating enable
+for_window [class="Syncthing GTK"] floating enable
+for_window [class="Keybase"] floating enable move right 0px, move down 712px, resize shrink width 10000px, resize grow width 450px; resize shrin
+k height 10000px, resize grow height 400px
+for_window [class="Mstdn"] floating enable move right 0px, move down 612px, resize shrink width 10000px, resize grow width 400px, resize shrink 
+height 10000px, resize grow height 400px
+
+
 # start a terminal
 bindsym $mod+Return exec termite
 
