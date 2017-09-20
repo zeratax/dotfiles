@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://gitgud.io/snippets/34
 
 ## OPTIONS
 
