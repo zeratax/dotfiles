@@ -92,6 +92,7 @@ source $ZSH/oh-my-zsh.sh
 
 alias screenrecord="ffmpeg -f alsa -ac 2 -i pulse -f x11grab -r 30 -s 1920x1080 -i :0.0 -acodec pcm_s16le -vcodec libx264 -preset ultrafast -crf 0 -threads 0 output.mkv"
 
+alias rot13="tr '[A-Za-z]' '[N-ZA-Mn-za-m]'"
 
 # upload() {
 #   if [ $# -eq 0 ]; then echo "No arguments specified. "; return 1; fi
