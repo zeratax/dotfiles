@@ -26,7 +26,7 @@ else:
                 arguments += argument.replace("{{url}}", url)
 
             if rule["notification"]:
-                notification=Notify.Notification.new("Opening with " +application, url, "system-run")
+                notification = Notify.Notification.new("Opening with " +application, url, "system-run")
                 Notify.Notification.set_timeout(notification, 2)
                 notification.show()
             subprocess.call([application, arguments])
