@@ -13,7 +13,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:Source Code Pro for Powerline 10
+# font pango:Source Code Pro for Powerline 10
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -199,25 +199,20 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 5
 
 #exec --no-startup-id conky -c $HOME/.config/bar/conky
 
-#client.focused #E34F26 #404552 #2e9ef4 #285577
-#client.focused_inactive #1793D1 #404552 #2e9ef4 #285577
-#client.unfocused #00188F #404552 #2e9ef4 #285577
-#client.urgent #E3265B #404552 #2e9ef4 #285577
-
 # colors
-client.focused #002b36 #002b36  #dc322f
-client.unfocused #002b36 #002b36 #839496
+client.focused          #002b36 #002b36 #dc322f
+client.unfocused        #002b36 #002b36 #839496
 client.focused_inactive #586e75 #586e75 #C1D1E0
-client.urgent #cb4b16 #cb4b16 #51c4d4
+client.urgent           #cb4b16 #cb4b16 #51c4d4
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 
 bar {
-    status_command bash /home/motoko/bin/conky-i3bar
+    status_command bash $HOME/bin/conky-i3bar
     mode dock
     position bottom
-    font pango:Source Code Pro for Powerline  7,8
+    font pango:font pango:DejaVu Sans Mono 7,8
     strip_workspace_numbers yes
     colors {
         background #002b36
@@ -230,10 +225,6 @@ bar {
         urgent_workspace   #002b36 #002b36 #b58900
     }
 }
-
-
-
-
 
 
 #####################################################################################
