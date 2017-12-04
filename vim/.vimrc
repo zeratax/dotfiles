@@ -40,20 +40,10 @@ let ruby_fold=1                       " Ruby
 let sh_fold_enabled=1                 " sh
 let vimsyn_folding='af'               " Vim script
 let xml_syntax_folding=1              " XML
-let fortran_free_source=1
+let fortran_free_source=1             " Fortran
 let fortran_have_tabs=1
 let fortran_more_precise=1
 let fortran_do_enddo=1
-
-" Solarized Syntax
-syntax enable
-set background=dark
-colorscheme solarized
-if has('gui_running')
-    set background=light
-else
-    set background=dark
-endif
 
 " Encoding
 set encoding=utf8
@@ -63,5 +53,3 @@ set guifont=DroidSansMonoForPowerline\ Nerd\ Font:h11
 " Keybinds
 "   Format JSON data
 map <C-F6> :%!python -m json.tool<CR>
-"   NERDTree
-map <C-n> :NERDTreeToggle<CR>
