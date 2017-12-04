@@ -70,7 +70,7 @@
 
 URxvt*scrollBar:           false
 
-URxvt*font:                xft:Source Code Pro for Powerline:regular:pixelsize=16:antialias=true:hinting=true
+URxvt*font:                xft:DejaVuSansMono NF:size=8:regular:pixelsize=16:antialias=true:hinting=true
 
 ! Perl Extensions
 URxvt.perl-ext-common:     default,matcher,resize-font
