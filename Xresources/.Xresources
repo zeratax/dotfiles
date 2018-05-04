@@ -1,5 +1,5 @@
-#include ".Xresources/solarized.Xcolors"
-#include ".Xresources/maim.Xcolors"
-#include ".Xresources/urxvt"
+#include ".Xresources.d/solarized.Xcolors"
+#include ".Xresources.d/main.Xcolors"
+#include ".Xresources.d/urxvt"
 
 
