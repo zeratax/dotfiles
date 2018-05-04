@@ -60,3 +60,4 @@ TEXT
   { "full_text" : " ${time %a %b %d}" , "color" : "\#657b83" },
   { "full_text" : " ${time %H:%M}  " , "color" : "\#657b83" }
   ],
+
