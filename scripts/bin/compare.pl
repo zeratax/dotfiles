@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# https://serverfault.com/questions/373058/comparing-owners-and-permissions-of-content-of-two-folders/373071#373071
 
 use File::Find;
 
