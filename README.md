@@ -138,6 +138,7 @@ Number  Start (sector)    End (sector)  Size       Code  Name
 
 ##### LUKS
 *Linux Unified Key Setup*
+
 Now we're going to encrypt the system partition *(/dev/sda4)* and boot partition *(/dev/sda3)*.
 Since  we're going to use GRUB *Grand Unified Bootloader* to boot our system, make sure to **NOT** use `--type luks2` on the boot partition, since **GRUB does not support LUKS2!**
 
