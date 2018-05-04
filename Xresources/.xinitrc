@@ -3,6 +3,10 @@
 eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 export GNOME_KEYRING_PID
 export GNOME_KEYRING_SOCKET
+#eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+#export GNOME_KEYRING_PID
+#export GNOME_KEYRING_SOCKET
+keychain -quiet -agents gpg
 export SSH_AUTH_SOCK
 
 alsactl init &
