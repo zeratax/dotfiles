@@ -78,7 +78,7 @@ sda                        8:0    0 238,5G  0 disk
 | BIOS boot partition | ESP partition       | Boot partition |  Logical volume 1   | Btrfs Subvolume      | Btrfs Subvolume      |
 |                     |                     |                |                     | @                    | @home                |
 |                     |                     |                |                     |                      |                      |
-|                     | /boot/efi           | /boot          | [SWAP]              | /                    | /home                |
+|                     | /boot/efi            | /boot          | [SWAP]              | /                    | /home                |
 |                     |                     |                |                     |                      |                      |
 |                     |                     |                |                     +----------------------+----------------------+
 |                     |                     |                | /dev/mapper/vg-swap | /dev/mapper/vg-arch Logical volume 2        |
