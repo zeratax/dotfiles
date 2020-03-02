@@ -29,7 +29,7 @@ stow -D vim
 ```
 
 ## Full Setup
-This is a complete guide to an arch linux setup, with luks disk encryption, uefi secure boot, brtfs filesystem, followed by user setup and a simple backup system.
+This is a complete guide to an Arch Linux setup, with LUKS disk encryption, UEFI secure boot, Brtfs filesystem, followed by user setup and a simple backup system.
 
 This guide is mostly a compilation of:
   - https://wiki.archlinux.org/index.php/installation_guide
@@ -239,7 +239,7 @@ For SSDs add the `-d` param (discard) to swapon and `discard,ssd` to btrfs subvo
 
 ```
 # mount /dev/mapper/vg-arch /mnt -o subvol=@,discard,ssd,compress=lzo,autodefrag
-# mkdir -p /mnt/{home,bootefi}
+# mkdir -p /mnt/{home,boot/efi}
 # mount /dev/mapper/vg-arch /mnt/home -o subvol=@home,discard,ssd,compress=lzo,autodefrag
 # mount /dev/mapper/cryptboot /mnt/boot
 # mount /dev/sda2 /mnt/boot/efi
@@ -249,7 +249,7 @@ For SSDs add the `-d` param (discard) to swapon and `discard,ssd` to btrfs subvo
 ##### Install rootfs with pacstrap
 From the live CD we're now going to install Arch to our mounted rootfs:
 ```
-# pacstrap -i /mnt base base-devel intel-ucode bash-completion vim zsh openssl
+# pacstrap -i /mnt base base-devel intel-ucode bash-completion vim zsh openssl git
 ```
 
 `intel-ucode` is only needed if you're using an intel cpu, more info here
@@ -280,6 +280,7 @@ Hence, /boot will not be available after the system has re-/booted,
 because the encrypt hook only unlocks the system's root.
 We're going to create a keyfile for our LUKS partition so that we won't need to
 enter the decryption phrase a 2nd time after GRUB unlocked the partition.
+
 Generate 4096 bit key and add it to LUKS:
 
 ```
@@ -359,6 +360,7 @@ Install btrfs-progs to use the btrfs hook:
 
 #####  Seting up the base system
 * Configure /etc/pacman.conf
+
   We're going to add GRUB to the ignore list since we're going to always manually update grub with cryptboot,
   so that our bootloader is always signed.
   - change
@@ -370,14 +372,16 @@ Install btrfs-progs to use the btrfs hook:
     IgnorePkg    = grub
     ```
 
-  Also add **archlinuxfr** to your repositories so that we can install yaourt
-  to easily get access to the AUR *Arch User Repository*,
-  since we're going to need that to install cryptboot later
-  add this to your `/etc/pacman.conf`
+  ~~Also add **archlinuxfr** to your repositories so that we can install yaourt
+  to easily get access to the AUR *Arch User Repository*,~~
+  Instead of yaourt we should install aurman, since yaourt is now considered deprecated,
+  since we're going to need that to install cryptboot later.
+  You can compare other AUR helpers here: https://wiki.archlinux.org/index.php/AUR_helpers
+
   ```
-  [archlinuxfr]
-  SigLevel = Never
-  Server = http://repo.archlinux.fr/$arch
+  git clone https://aur.archlinux.org/aurman.git
+  cd aurman
+  makepkg -sicr
   ```
 
 * Edit /etc/locale.conf:
@@ -454,7 +458,7 @@ freshly installed Arch Linux.
   ```
   # exit
   # umount -R /mnt
-  # swapoff /dev/mapper/vg-swap
+  # swapoff -a
   ```
 
   - Reboot:
