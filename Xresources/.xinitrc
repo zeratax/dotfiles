@@ -1,5 +1,5 @@
 #! /bin/bash
-export WALLPAPER_DIR=~/Bilder/Photography/Masashi\ Wakui/* 
+export WALLPAPER_DIR=~/Pictures/Photography/Masashi\ Wakui/ 
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 #eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 #export GNOME_KEYRING_PID
