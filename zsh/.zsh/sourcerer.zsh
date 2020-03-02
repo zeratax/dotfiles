@@ -19,3 +19,7 @@ then
     echo -en "\e]PFc1cdc1" #white
     clear #for background artifacting
 fi
+if [[ $TERM == xterm-termite ]]; then
+  . /etc/profile.d/vte.sh
+  __vte_osc7
+fi
