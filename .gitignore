@@ -19,3 +19,8 @@ vim/.vim/.netrwhist
 
 # youtube-dl
 .netrc
+
+# weechat
+logs
+*.log
+sec.conf
