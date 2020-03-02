@@ -1,0 +1,4 @@
+# put your login information into .netrc
+# machine <extractor> login <login> password <password>
+# https://github.com/rg3/youtube-dl/blob/master/README.md#authentication-with-netrc-file
+--netrc

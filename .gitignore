@@ -16,3 +16,6 @@ vim/.vim/.netrwhist
 
 # python
 *.pyc
+
+# youtube-dl
+.netrc
