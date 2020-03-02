@@ -10,6 +10,12 @@ set wildignore+=*.doc,*.pdf,*.cbr,*.cbz
 set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz,*.kgb
 set wildignore+=*.swp,.lock,.DS_Store,._*
 
+" persistent undo
+if has('persistent_undo')
+  set undofile
+  set undodir=$HOME/.vim/undo
+endif
+
 " case insensitive search
 set ignorecase
 set smartcase
@@ -49,8 +55,27 @@ let fortran_have_tabs=1
 let fortran_more_precise=1
 let fortran_do_enddo=1
 
+syntax on
+
 " Encoding
-set encoding=utf8
+" Stick with the UTF-8 encoding.
+if has('multi_byte')
+  " Encoding used for the terminal.
+  if empty(&termencoding)
+    let &termencoding = &encoding
+  endif
+
+  " Encoding used in buffers, registers, strings in expressions, "viminfo"
+  " file, etc.
+  set encoding=utf-8
+
+  " Encoding used for writing files.
+  setglobal fileencoding=utf-8
+endif
+
+" Use both Unix and DOS file formats, but favor the Unix one for new files.
+set fileformats=unix,dos
+
 " Font
 set guifont=DroidSansMonoForPowerline\ Nerd\ Font:h11
 
