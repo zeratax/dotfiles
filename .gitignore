@@ -1,3 +1,8 @@
+# rtorrrent
+rtorrent/rtorrent/watch/*
+rtorrent/rtorrent/session/*
+rtorrent/rtorrent/downloads/*
+
 # mpd
 mpd/.config/mpd/database
 mpd/.config/mpd/log
