@@ -1,0 +1,5 @@
+window:
+  decorations: full
+colors:
+  primary:
+    background: '0x000033'
