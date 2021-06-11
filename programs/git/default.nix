@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }: {
-  programs.git  = with config.programs; {
+  programs.git = with config.programs; {
     enable = true;
 
     userName = "ZerataX";

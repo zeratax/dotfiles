@@ -1,9 +1,6 @@
 {pkgs,  ...}:
-
 let
-
   sshKey = "~/.ssh/id_rsa";
-
 in rec {
   programs.ssh = {
     enable = true;
