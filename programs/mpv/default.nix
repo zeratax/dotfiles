@@ -29,8 +29,7 @@ in
       cursor-autohide = 100;
       force-window = "immediate";
       keep-open = true;
-      fs = true;
-      fs-screen = 1;
+      # fs = true; # crashes???
 
       #Priority
       slang = "gem,ger,gmh,de,deu,en,eng";
@@ -74,9 +73,9 @@ in
       deband-grain = 0;
 
       # Grain & Resizer
-      glsl-shader = "~/.config/nixpkgs/mpv/shaders/${if (mpv-gpu-api  == "vulkan") then "vulkan/" else ""}ravu-r4.hook";
+      glsl-shader = "~/.config/nixpkgs/programs/mpv/shaders/${if (mpv-gpu-api  == "vulkan") then "vulkan/" else ""}ravu-r4.hook";
       fbo-format = if (mpv-gpu-api  == "vulkan") then "rgba16hf" else "rgba16f";
-      no-scaler-resizes-only = true;
+      # no-scaler-resizes-only = true;
 
       # Resizer
       scale = "ewa_lanczossharp";
@@ -190,13 +189,13 @@ in
       # GIF Files
       "extension.gif" = {
         cache = false;
-        no-pause = true;
+        # no-pause = true;
         loop-file = true;
       };
 
       # WebM Files
       "extension.webm" = {
-        no-pause = true;
+        # no-pause = true;
         loop-file = true;
       };
     };
