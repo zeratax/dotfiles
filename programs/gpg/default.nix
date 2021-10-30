@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: {
-  # home.packages = with pkgs; [
-  #   pinentry-curses
-  # ];
+  home.packages = with pkgs; [
+    pinentry-curses
+  ];
 
   programs.gpg = {
     enable = true;

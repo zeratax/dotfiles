@@ -17,18 +17,17 @@ in rec {
     packageOverrides = pkgs: {
       nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
         inherit pkgs;
-        repoOverrides = {
-          zeratax = import ~/git/nur-packages {};
+        repoOverrides = { 
           ## remote locations are also possible:
           # mic92 = import (builtins.fetchTarball "https://github.com/your-user/nur-packages/archive/master.tar.gz");
+        } // lib.optionalAttrs (builtins.pathExists ~/git/nur-packages) {
+          zeratax = import ~/git/nur-packages {};
         };
       };
     };
   };
 
   nixpkgs.overlays = [
-    # ( import ./overlays/steam.nix )
-    # ( import ./overlays/mirage.nix )
     # (self: super: {
     #   mpv = pkgsOld.mpv;
     # })
@@ -102,8 +101,6 @@ in rec {
       mullvad-vpn
       neofetch
       nextcloud-client
-      # syncthingtray
-      # pkgsUnstable.syncthing-gtk
       tectonic
       texlive.combined.scheme-full
       texstudio
@@ -122,6 +119,7 @@ in rec {
     ./programs/ssh
     ./programs/vim
     ./programs/vscode
+    ./services/syncthing
   ];
 
   # This value determines the Home Manager release that your
