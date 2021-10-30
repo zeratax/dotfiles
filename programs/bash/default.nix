@@ -6,7 +6,7 @@
     # sessionVariables = home.sessionVariables;
     # https://github.com/rycee/home-manager/issues/1011
     bashrcExtra = ''
-      export MANGOHUD=1
+      export MANGOHUD=0
     '';
   };
 }
