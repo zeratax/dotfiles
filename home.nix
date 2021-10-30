@@ -17,21 +17,8 @@ in rec {
     packageOverrides = pkgs: {
       nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
         inherit pkgs;
-<<<<<<< HEAD
-        repoOverrides = { 
-          ## remote locations are also possible:
-          # mic92 = import (builtins.fetchTarball "https://github.com/your-user/nur-packages/archive/master.tar.gz");
-        } // lib.optionalAttrs (builtins.pathExists ~/git/nur-packages) {
-          zeratax = import ~/git/nur-packages {};
-||||||| 8e1c8d3
-        repoOverrides = {
-          zeratax = import ~/git/nur-packages {};
-          ## remote locations are also possible:
-          # mic92 = import (builtins.fetchTarball "https://github.com/your-user/nur-packages/archive/master.tar.gz");
-=======
         repoOverrides = {} // lib.optionalAttrs (builtins.pathExists ~/git/nur-packages) {
           zeratax = import ~/git/nur-packages {};
->>>>>>> 69792dae02f55f4a726c6f3727613c9d1ec585b8
         };
       };
     };
