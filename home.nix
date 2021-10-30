@@ -38,18 +38,9 @@ in rec {
   };
 
   nixpkgs.overlays = [
-<<<<<<< HEAD
     # (self: super: {
     #   mpv = pkgsOld.mpv;
     # })
-||||||| 8e1c8d3
-    # ( import ./overlays/steam.nix )
-    # ( import ./overlays/mirage.nix )
-    # (self: super: {
-    #   mpv = pkgsOld.mpv;
-    # })
-=======
->>>>>>> 69792dae02f55f4a726c6f3727613c9d1ec585b8
   ];
 
 
