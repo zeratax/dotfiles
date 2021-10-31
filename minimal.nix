@@ -47,65 +47,29 @@ in rec {
       cachix
       gcc
       nixfmt
-      ## IDES
-      jetbrains.idea-ultimate
+      wget
       # version control
       git-crypt
       gitAndTools.gh
 
       jq
 
-      # games
-      multimc
-      obs-studio
-      pkgsUnstable.minecraft
-      pkgsUnstable.protontricks
-      lutris
-      steam
-      # rpcs3
-      xonotic
-
-      # media
-      transmission-gtk
-      spotify
-      # spotify-tui
-      pkgsUnstable.syncplay # temporary: https://github.com/NixOS/nixpkgs/pull/102130
-
       # productivity
-      ## social
-      # pkgsUnstable.mirage-im # temporary: https://github.com/NixOS/nixpkgs/issues/94905
-      nheko
       ## general
-      chromium
-      evince
-      feh
-      inkscape
-      keepassxc
-      maim
-      mullvad-vpn
       neofetch
-      nextcloud-client
-      tectonic
-      texlive.combined.scheme-full
-      texstudio
       tree
       xclip
-      
-      gnome3.gnome-disk-utility
     ];
   };
 
   imports = [
-    ./programs/alacritty
     ./programs/bash
     # ./programs/color # vuln in python pillow 2.6
     ./programs/git
     ./programs/gpg
-    ./programs/mpv
     ./programs/ssh
     ./programs/vim
-    ./programs/vscode
-    ./services/syncthing
+    ./programs/vscode/wsl.nix
     ./programs/yaml2nix.nix
   ];
 

@@ -1,3 +1,6 @@
 [submodule "programs/mpv/shaders"]
 	path = programs/mpv/shaders
 	url = https://github.com/bjin/mpv-prescalers/
+[submodule "programs/vscode/vscode-remote-wsl-nixos"]
+	path = programs/vscode/vscode-remote-wsl-nixos
+	url = https://github.com/sonowz/vscode-remote-wsl-nixos
