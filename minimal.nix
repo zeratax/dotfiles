@@ -35,12 +35,6 @@ in rec {
   programs.home-manager.enable = true;
 
   home = {
-    homeDirectory = "/home/${home.username}";
-    username = "kaine";
-
-    sessionVariables = {
-      MANGOHUD = 1;
-    };
     packages = with pkgs; [
       # development
       bat
@@ -69,9 +63,6 @@ in rec {
     ./programs/gpg
     ./programs/ssh
     ./programs/vim
-    ./programs/vscode/wsl.nix
     ./programs/yaml2nix.nix
   ];
-
-  home.stateVersion = "21.05";
 }

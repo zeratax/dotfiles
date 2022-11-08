@@ -2,6 +2,6 @@
 {
     imports = [
         ./minimal.nix
-        ./programs/vscode/wsl.nix
+    #    ./programs/vscode/wsl.nix # doesnt seem necessary anymore
     ];
 }
