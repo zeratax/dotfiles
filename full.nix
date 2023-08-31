@@ -14,19 +14,24 @@ in rec {
     imports = [
         ./minimal.nix
         ./programs/alacritty
+        ./programs/keepassxc
         ./programs/mpv
         ./programs/vscode
-        ./services/syncthing
+        # ./services/syncthing
     ];
 
     home = {
         packages = with pkgs; [
+        age
+        
         # development
         ## IDES
         jetbrains.idea-ultimate
 
+        parsec-bin
+
         # games
-        multimc
+        prismlauncher
         obs-studio
         pkgsUnstable.minecraft
         pkgsUnstable.protontricks
@@ -50,7 +55,6 @@ in rec {
         evince
         feh
         inkscape
-        keepassxc
         maim
         mullvad-vpn
         nextcloud-client

@@ -8,6 +8,8 @@ in {
   programs.vim = {
     enable = true;
 
+    # defaultEditor = true; # next release
+
     extraConfig = (builtins.readFile ./commands.vim)
       + (builtins.readFile ./general.vim)
       + (builtins.readFile ./keybindings.vim)

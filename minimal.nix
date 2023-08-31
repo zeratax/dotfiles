@@ -53,6 +53,9 @@ in rec {
       neofetch
       tree
       xclip
+
+      ## networking
+      tailscale
     ];
   };
 
@@ -62,6 +65,7 @@ in rec {
     ./programs/git
     ./programs/gpg
     ./programs/ssh
+    ./programs/tmux
     ./programs/vim
     ./programs/yaml2nix.nix
   ];
