@@ -1,7 +1,5 @@
-{ config, lib, pkgs, ... }: 
+{ config, lib, pkgs, ... }:
 
 {
-  programs.steam = {
-    enable = true;
-  };
+  programs.steam = { enable = true; };
 }

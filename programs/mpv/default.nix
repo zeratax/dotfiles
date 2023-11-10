@@ -1,8 +1,9 @@
 { config, lib, pkgs, ... }:
 let
   mpv-gpu-api = "vulkan";
-in
-{
+  prescalers =
+    fetchTarball "https://github.com/bjin/mpv-prescalers/tarball/master";
+in {
   programs.mpv = {
     enable = true;
 
@@ -73,8 +74,10 @@ in
       deband-grain = 0;
 
       # Grain & Resizer
-      glsl-shader = "~/.config/nixpkgs/programs/mpv/shaders/${if (mpv-gpu-api  == "vulkan") then "vulkan/" else ""}ravu-r4.hook";
-      fbo-format = if (mpv-gpu-api  == "vulkan") then "rgba16hf" else "rgba16f";
+      glsl-shader = "${prescalers}/${
+          if (mpv-gpu-api == "vulkan") then "vulkan" else ""
+        }/ravu-r4.hook";
+      fbo-format = if (mpv-gpu-api == "vulkan") then "rgba16hf" else "rgba16f";
       # no-scaler-resizes-only = true;
 
       # Resizer
@@ -124,65 +127,77 @@ in
       # Very Low = 480p, Low = 720p, Medium = 1080p, High = 1440p, Ultra = 2160p (4K), Supreme = 4320p (8K)
       # 30 = 30 frames per second, 60 = 60 frames per second
       # Use the switch e.g: --profile=H60
-      
+
       S60 = {
         profile-desc = "4320p (8K) 60 FPS";
-        ytdl-format = ''bestvideo[height<=?4320][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?4320][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       S30 = {
         profile-desc = "2160p (4K) 60 FPS";
-        ytdl-format = ''bestvideo[height<=?4320][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?4320][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       U60 = {
         profile-desc = "2160p (4K) 60 FPS";
-        ytdl-format = ''bestvideo[height<=?2160][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?2160][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       U30 = {
         profile-desc = "2160p (4K) 30 FPS";
-        ytdl-format = ''bestvideo[height<=?2160][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?2160][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       H60 = {
         profile-desc = "1440p 60 FPS";
-        ytdl-format = ''bestvideo[height<=?1440][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?1440][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       H30 = {
         profile-desc = "1440p 30 FPS";
-        ytdl-format = ''bestvideo[height<=?1440][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?1440][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       M60 = {
         profile-desc = "1080p 60 FPS";
-        ytdl-format = ''bestvideo[height<=?1080][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?1080][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       M30 = {
         profile-desc = "1080p 30 FPS";
-        ytdl-format = ''bestvideo[height<=?1080][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?1080][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       L60 = {
         profile-desc = "720p 60 FPS";
-        ytdl-format = ''bestvideo[height<=?720][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?720][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       L30 = {
         profile-desc = "720p 30 FPS";
-        ytdl-format = ''bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       V60 = {
         profile-desc = "480p 60 FPS";
-        ytdl-format = ''bestvideo[height<=?480][fps<=?60][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?480][fps<=?60][vcodec!=?vp9]+bestaudio/best";
       };
-      
+
       V30 = {
         profile-desc = "480p 30 FPS";
-        ytdl-format = ''bestvideo[height<=?480][fps<=?30][vcodec!=?vp9]+bestaudio/best'';
+        ytdl-format =
+          "bestvideo[height<=?480][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
 
       # File Type Profiles

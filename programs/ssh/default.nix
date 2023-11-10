@@ -1,9 +1,9 @@
-{pkgs,  ...}:
-let
-  sshKey = "~/.ssh/id_rsa";
+{ pkgs, ... }:
+let sshKey = "~/.ssh/id_rsa";
 in rec {
   programs.ssh = {
     enable = true;
+    # agentTimeout = "1h";
     matchBlocks = {
       "github.com" = {
         hostname = "github.com";

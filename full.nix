@@ -11,58 +11,63 @@ let
   # }) { };
 
 in rec {
-    imports = [
-        ./minimal.nix
-        ./programs/alacritty
-        ./programs/keepassxc
-        ./programs/mpv
-        ./programs/vscode
-        # ./services/syncthing
-    ];
+  imports = [
+    ./minimal.nix
+    ./programs/alacritty
+    ./programs/mpv
+    ./programs/vscode
+    # ./services/syncthing
+  ];
+  home = {
+    packages = with pkgs; [
+      # development
+      ## IDES
+      jetbrains.idea-ultimate
 
-    home = {
-        packages = with pkgs; [
-        age
-        
-        # development
-        ## IDES
-        jetbrains.idea-ultimate
+      # games
+      parsec-bin
+      prismlauncher
+      obs-studio
+      pkgsUnstable.minecraft
+      pkgsUnstable.protontricks
+      lutris
+      steam
+      # rpcs3
+      xonotic
 
-        parsec-bin
+      # media
+      transmission-gtk
+      spotify
+      # spotify-tui
+      pkgsUnstable.syncplay # temporary: https://github.com/NixOS/nixpkgs/pull/102130
 
-        # games
-        prismlauncher
-        obs-studio
-        pkgsUnstable.minecraft
-        pkgsUnstable.protontricks
-        lutris
-        steam
-        # rpcs3
-        xonotic
+      # productivity
+      ## social
+      # pkgsUnstable.mirage-im # temporary: https://github.com/NixOS/nixpkgs/issues/94905
+      nheko
+      ## general
+      chromium
+      evince
+      feh
+      inkscape
+      keepassxc
+      maim
+      mullvad-vpn
+      nextcloud-client
+      tectonic
+      texlive.combined.scheme-full
+      texstudio
 
-        # media
-        transmission-gtk
-        spotify
-        # spotify-tui
-        pkgsUnstable.syncplay # temporary: https://github.com/NixOS/nixpkgs/pull/102130
-
-        # productivity
-        ## social
-        # pkgsUnstable.mirage-im # temporary: https://github.com/NixOS/nixpkgs/issues/94905
-        nheko
-        ## general
-        chromium
-        evince
-        feh
-        inkscape
-        maim
-        mullvad-vpn
-        nextcloud-client
-        tectonic
-        texlive.combined.scheme-full
-        texstudio
-        
-        gnome3.gnome-disk-utility
+      gnome3.gnome-disk-utility
     ];
   };
+
+  imports = [
+    ./minimal.nix
+    ./programs/alacritty
+    ./programs/color # vuln in python pillow 2.6
+    ./programs/mpv
+    ./programs/vscode
+    ./services/syncthing
+  ];
 }

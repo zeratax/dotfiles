@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: 
+{ config, lib, pkgs, ... }:
 # https://github.com/matejc/helper_scripts/blob/master/dotfiles/yaml2nix.nix
 let
   yaml2nix = pkgs.writeScriptBin "yaml2nix" ''
@@ -39,6 +39,4 @@ let
       yamlFile2nix "$1"
     fi
   '';
-in {
-    home.packages = [ yaml2nix ];
-}
+in { home.packages = [ yaml2nix ]; }

@@ -1,8 +1,5 @@
-{pkgs,  ...}:
+{ pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    argyllcms
-    displaycal
-  ];
+  home.packages = with pkgs; [ argyllcms displaycal ];
 }

@@ -15,12 +15,14 @@ in rec {
     allowUnfree = true;
 
     packageOverrides = pkgs: {
-      nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-        inherit pkgs;
-        repoOverrides = {} // lib.optionalAttrs (builtins.pathExists ~/git/nur-packages) {
-          zeratax = import ~/git/nur-packages {};
+      nur = import (builtins.fetchTarball
+        "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+          inherit pkgs;
+          repoOverrides = { }
+            // lib.optionalAttrs (builtins.pathExists ~/git/nur-packages) {
+              zeratax = import ~/git/nur-packages { };
+            };
         };
-      };
     };
   };
 
@@ -30,7 +32,6 @@ in rec {
     # })
   ];
 
-
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
@@ -39,14 +40,15 @@ in rec {
       # development
       bat
       cachix
-      gcc
       nixfmt
       wget
+
       # version control
       git-crypt
       gitAndTools.gh
 
       jq
+      ripgrep
 
       # productivity
       ## general
@@ -61,7 +63,6 @@ in rec {
 
   imports = [
     ./programs/bash
-    # ./programs/color # vuln in python pillow 2.6
     ./programs/direnv
     ./programs/git
     ./programs/gpg
