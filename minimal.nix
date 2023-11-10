@@ -62,6 +62,7 @@ in rec {
   imports = [
     ./programs/bash
     # ./programs/color # vuln in python pillow 2.6
+    ./programs/direnv
     ./programs/git
     ./programs/gpg
     ./programs/ssh
