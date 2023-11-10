@@ -68,5 +68,6 @@ in rec {
     ./programs/tmux
     ./programs/vim
     ./programs/yaml2nix.nix
+    ./programs/zellij
   ];
 }
