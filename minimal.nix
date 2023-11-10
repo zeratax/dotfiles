@@ -65,6 +65,7 @@ in rec {
     ./programs/direnv
     ./programs/git
     ./programs/gpg
+    ./programs/oh-my-posh
     ./programs/ssh
     ./programs/tmux
     ./programs/vim
