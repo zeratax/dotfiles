@@ -27,21 +27,21 @@
               "macos": "\uf179"
             },
             "style": "plain",
-            "template": " {{.Icon}}{{if .WSL}} (WSL){{end}}\u2800",
+            "template": "\u2009\u200B{{.Icon}}{{if .WSL}} (WSL){{end}}\u2009",
             "type": "os"
           },
           {
             "background": "p:white",
             "foreground": "p:black",
             "style": "plain",
-            "template": " \uf489 {{.Name}}\u2800",
+            "template": " \uf489 {{.Name}}\u2009",
             "type": "shell"
           },
           {
             "background": "#ffe093",
             "foreground": "p:black",
             "style": "plain",
-            "template": " \uf2c0 {{.HostName}}/{{.UserName}}\u2800",
+            "template": " \uf2c0 {{.HostName}}/{{.UserName}}\u2009",
             "type": "session"
           },
           {
@@ -51,7 +51,7 @@
               "branch_icon": " \ue0a0 "
             },
             "style": "plain",
-            "template": "{{.HEAD}}\u2800",
+            "template": "{{.HEAD}}\u2009",
             "type": "git"
           }
         ]

@@ -49,6 +49,7 @@ in rec {
       chromium
       evince
       feh
+      firefox
       inkscape
       keepassxc
       maim
@@ -61,13 +62,4 @@ in rec {
       gnome3.gnome-disk-utility
     ];
   };
-
-  imports = [
-    ./minimal.nix
-    ./programs/alacritty
-    ./programs/color # vuln in python pillow 2.6
-    ./programs/mpv
-    ./programs/vscode
-    ./services/syncthing
-  ];
 }
