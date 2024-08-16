@@ -1,9 +1,10 @@
 {pkgs, ...}: let
-  unstable = import <nixos-unstable> {};
+  nixos-unstable = import <nixos-unstable> {};
   neovim-config = import ./neovim-config {};
 in {
   programs.neovim = {
     enable = true;
+    package = nixos-unstable.neovim-unwrapped;
     withNodeJs = true;
     withPython3 = true;
     extraPackages = with pkgs; [
@@ -16,7 +17,7 @@ in {
       nil
       nixd
       nodePackages.pyright
-      unstable.ruff-lsp
+      nixos-unstable.ruff-lsp
 
       # other dependencies
       unzip
@@ -24,7 +25,9 @@ in {
       gnumake
     ];
     extraLuaConfig = ''
-      dofile("${neovim-config}/init.lua")
+      package.path = package.path .. ";${neovim-config}/?.lua"
+      package.path = package.path .. ";${neovim-config}/lua/?.lua"
+      require "init"
     '';
     plugins = with pkgs.vimPlugins; [
       telescope-fzf-native-nvim
