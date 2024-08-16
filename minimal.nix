@@ -64,5 +64,6 @@
     ./programs/vim
     ./programs/yaml2nix.nix
     ./programs/zellij
+    ./programs/zoxide
   ];
 }
