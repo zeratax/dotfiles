@@ -1,6 +1,11 @@
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
-    # ./default.nix 
+    # ./default.nix
     "${
       fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master"

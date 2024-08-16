@@ -1,5 +1,5 @@
-{ config, lib, pkgs, ... }: {
-  programs.git = with config.programs; {
+{config, ...}: {
+  programs.git = {
     enable = true;
 
     userName = "ZerataX";
@@ -7,14 +7,14 @@
 
     signing = {
       signByDefault = true;
-      key = gpg.settings.default-key;
+      key = config.programs.gpg.settings.default-key;
     };
 
     # Large File Storage
     lfs.enable = true;
 
     extraConfig = {
-      core = { editor = "vim"; };
+      core = {editor = "vim";};
 
       diff.tool = "vimdiff";
       merge.tool = "vimdiff";

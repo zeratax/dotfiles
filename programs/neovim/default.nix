@@ -1,7 +1,6 @@
-{ pkgs, ... }:
-let
-  unstable = import <nixos-unstable> { };
-  neovim-config = import ./neovim-config { };
+{pkgs, ...}: let
+  unstable = import <nixos-unstable> {};
+  neovim-config = import ./neovim-config {};
 in {
   programs.neovim = {
     enable = true;

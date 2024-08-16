@@ -1,13 +1,11 @@
-{ pkgs, ... }:
-
-{
+{...}: {
   programs.bash = {
     shellAliases = {
       zwd = "zellij attach $(echo $(pwd) | sed 's/\\//\\\\/g') -c";
     };
   };
-  home.sessionVariables = { ZELLIJ_AUTO_ATTACH = "true"; };
-  
+  home.sessionVariables = {ZELLIJ_AUTO_ATTACH = "true";};
+
   programs.zellij = {
     enable = true;
     enableBashIntegration =

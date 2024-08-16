@@ -1,7 +1,5 @@
 # Adjusted from Sensible Bash - An attempt at saner Bash defaults https://github.com/mrzool/bash-sensible
-{ pkgs, ... }:
-
-{
+{...}: {
   programs.bash = {
     enable = true;
     sessionVariables = {
@@ -39,7 +37,7 @@
       # define a variable containing a path and you will be able to cd into it regardless of the directory you're in
       "cdable_vars"
     ];
-    historyIgnore = [ "&" "[ ]*" "exit" "ls" "bg" "fg" "history" "clear" ];
+    historyIgnore = ["&" "[ ]*" "exit" "ls" "bg" "fg" "history" "clear"];
     historySize = 50000;
     historyFileSize = 100000;
     historyControl = [

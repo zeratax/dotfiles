@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   font = "DejaVuSansM Nerd Font Mono";
-in 
-{
+in {
   programs.alacritty.enable = true;
   programs.alacritty.settings = {
     normal = {
@@ -23,5 +21,5 @@ in
     };
   };
   fonts.fontconfig.enable = true;
-  home.packages = with pkgs; [ nerdfonts ];
+  home.packages = with pkgs; [nerdfonts];
 }

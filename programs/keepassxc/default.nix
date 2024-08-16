@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{pkgs, ...}:
 with pkgs; let
   patchDesktop = pkg: appName: from: to: (lib.hiPrio (runCommand "$patched-desktop-entry-for-${appName}" {} ''
     ${coreutils}/bin/mkdir -p $out/share/applications

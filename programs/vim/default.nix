@@ -1,7 +1,10 @@
-{ pkgs, lib, config, ... }:
-
-let
-  pkgsUnstable = import <nixos-unstable> { };
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
+  pkgsUnstable = import <nixos-unstable> {};
   vimPlugins = pkgsUnstable.vimPlugins;
   cfg = config.programs.vim;
 in {
@@ -31,6 +34,6 @@ in {
     ];
   };
 
-  home.packages = with pkgs;
-    lib.mkIf (builtins.elem vimPlugins.tagbar cfg.plugins) [ ctags ];
+  home.packages =
+    lib.mkIf (builtins.elem vimPlugins.tagbar cfg.plugins) [pkgs.ctags];
 }

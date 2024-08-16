@@ -1,10 +1,13 @@
-{ pkgs, lib, config, ... }:
-
 {
+  lib,
+  config,
+  ...
+}: {
   programs.direnv = {
     enable = true;
-    enableBashIntegration = lib.mkIf config.programs.bash.enable
-      true; # see note on other shells below
+    enableBashIntegration =
+      lib.mkIf config.programs.bash.enable
+      true;
     nix-direnv.enable = true;
   };
 }

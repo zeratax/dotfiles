@@ -1,6 +1,6 @@
-{ pkgs, ... }:
-let sshKey = "~/.ssh/id_rsa";
-in rec {
+{...}: let
+  sshKey = "~/.ssh/id_rsa";
+in {
   programs.ssh = {
     enable = true;
     # agentTimeout = "1h";
