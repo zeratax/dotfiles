@@ -1,5 +1,4 @@
 {...}: let
-  mpv-gpu-api = "vulkan";
   prescalers =
     fetchTarball "https://github.com/bjin/mpv-prescalers/tarball/master";
 in {
@@ -10,12 +9,12 @@ in {
 
     config = {
       # General
-      gpu-api = mpv-gpu-api;
+      gpu-api = "vulkan";
 
       spirv-compiler = "shaderc";
 
       hwdec = "auto-safe";
-      vo = "gpu";
+      vo = "gpu-next";
 
       # Cache
       # Uses a large seekable RAM cache even for local input.
@@ -73,21 +72,14 @@ in {
       deband-grain = 0;
 
       # Grain & Resizer
-      glsl-shader = "${prescalers}/${
-        if (mpv-gpu-api == "vulkan")
-        then "vulkan"
-        else ""
-      }/ravu-r4.hook";
-      fbo-format =
-        if (mpv-gpu-api == "vulkan")
-        then "rgba16hf"
-        else "rgba16f";
+      glsl-shader = "${prescalers}/gather/ravu-r4.hook";
+      fbo-format = "rgba16f";
       # no-scaler-resizes-only = true;
 
       # Resizer
-      scale = "ewa_lanczossharp";
+      scale = "ewa_lanczos";
       dscale = "ewa_lanczos";
-      cscale = "ewa_lanczossoft";
+      cscale = "ewa_lanczos";
 
       # Interpolation
       blend-subtitles = true;
