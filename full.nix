@@ -21,7 +21,7 @@ in {
       parsec-bin
       prismlauncher
       obs-studio
-      pkgsUnstable.minecraft
+      # minecraft # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/games/minecraft/default.nix#L156
       pkgsUnstable.protontricks
       lutris
       steam
