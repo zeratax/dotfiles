@@ -4,6 +4,7 @@
 in {
   programs.neovim = {
     enable = true;
+    defaultEditor = true;
     package = nixos-unstable.neovim-unwrapped;
     withNodeJs = true;
     withPython3 = true;
@@ -18,11 +19,19 @@ in {
       nixd
       nodePackages.pyright
       nixos-unstable.ruff-lsp
+      nixos-unstable.typescript-language-server
+
+      # formatters
+      alejandra
+      nixos-unstable.ruff
+      stylua
 
       # other dependencies
       unzip
       gdb
       gnumake
+
+      markdownlint-cli
     ];
     extraLuaConfig = ''
       package.path = package.path .. ";${neovim-config}/?.lua"

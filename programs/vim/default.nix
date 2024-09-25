@@ -11,7 +11,7 @@ in {
   programs.vim = {
     enable = true;
 
-    defaultEditor = true;
+    # defaultEditor = true;
 
     extraConfig = ''
       source ${./commands.vim}

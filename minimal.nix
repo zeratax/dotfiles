@@ -26,6 +26,9 @@
   programs.home-manager.enable = true;
 
   home = {
+    sessionVariables = {
+      ANTHROPIC_API_KEY = builtins.readFile ./secrets/anthropic.key;
+    };
     packages = with pkgs; [
       # development
       alejandra
