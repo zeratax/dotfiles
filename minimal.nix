@@ -36,6 +36,7 @@
       cachix
       nixfmt-rfc-style
       wget
+      volta
 
       # version control
       git-crypt
@@ -59,13 +60,13 @@
     ./programs/bash
     ./programs/direnv
     ./programs/git
-    ./programs/gpg
     ./programs/neovim
     ./programs/oh-my-posh
     ./programs/ssh
     ./programs/tmux
     ./programs/vim
     ./programs/yaml2nix.nix
+    ./programs/jujutsu
     ./programs/zellij
     ./programs/zoxide
   ];
