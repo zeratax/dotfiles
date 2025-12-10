@@ -15,14 +15,20 @@
   programs.home-manager.enable = true;
 
   home = {
-    # sessionVariables = {
-    #   ANTHROPIC_API_KEY = builtins.readFile ../secrets/anthropic.key;
-    # };
+    sessionVariables = {
+      FLAKE = "$HOME/git/dotfiles";
+      # ANTHROPIC_API_KEY = builtins.readFile ../secrets/anthropic.key;
+    };
+    shellAliases = {
+      # nh with local neovim-config override for development
+      nhl = "nh home switch --override-input neovim-config path:$HOME/git/neovim-config";
+    };
     packages = with pkgs; [
       # development
       alejandra
       bat
       cachix
+      nh
       nixfmt-rfc-style
       wget
       volta
