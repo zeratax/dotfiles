@@ -1,7 +1,8 @@
-{ pkgs, ... }:
-let
-  neovim-config = import ./neovim-config { };
-in {
+{
+  pkgs,
+  neovim-config,
+  ...
+}: {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -9,7 +10,7 @@ in {
     withPython3 = true;
     extraPackages = with pkgs; [
       # compilers for plugins
-      llvmPackages_17.libcxxClang
+      llvmPackages_18.libcxxClang
 
       # language servers
       clang-tools

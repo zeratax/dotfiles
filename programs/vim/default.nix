@@ -4,8 +4,6 @@
   config,
   ...
 }: let
-  pkgsUnstable = import <nixos-unstable> {};
-  vimPlugins = pkgsUnstable.vimPlugins;
   cfg = config.programs.vim;
 in {
   programs.vim = {
@@ -19,7 +17,7 @@ in {
       source ${./ui.vim}
     '';
 
-    plugins = with vimPlugins; [
+    plugins = with pkgs.vimPlugins; [
       ale
       matchit-zip
       # syntastic
@@ -33,5 +31,5 @@ in {
   };
 
   home.packages =
-    lib.mkIf (builtins.elem vimPlugins.tagbar cfg.plugins) [pkgs.ctags];
+    lib.mkIf (builtins.elem pkgs.vimPlugins.tagbar cfg.plugins) [pkgs.ctags];
 }

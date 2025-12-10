@@ -1,19 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{nixos-vscode-server, ...}: {
   imports = [
-    # ./default.nix
-    "${
-      fetchTarball
-      "https://github.com/nix-community/nixos-vscode-server/tarball/master"
-    }/modules/vscode-server/home.nix"
+    nixos-vscode-server.homeModules.default
   ];
 
-  # home.file.".vscode-server/server-env-setup".source = ./vscode-remote-wsl-nixos/server-env-setup;
-
   services.vscode-server.enable = true;
-  # services.vscode-server.nodejsPackage = pkgs.nodejs-18_x;
 }

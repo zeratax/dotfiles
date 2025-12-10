@@ -1,7 +1,4 @@
-{...}: let
-  prescalers =
-    fetchTarball "https://github.com/bjin/mpv-prescalers/tarball/master";
-in {
+{mpv-prescalers, ...}: {
   programs.mpv = {
     enable = true;
 
@@ -72,7 +69,7 @@ in {
       deband-grain = 0;
 
       # Grain & Resizer
-      glsl-shader = "${prescalers}/gather/ravu-r4.hook";
+      glsl-shader = "${mpv-prescalers}/gather/ravu-r4.hook";
       fbo-format = "rgba16f";
       # no-scaler-resizes-only = true;
 
