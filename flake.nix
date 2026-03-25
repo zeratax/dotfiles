@@ -68,11 +68,18 @@
       };
   in {
     homeConfigurations = {
-      # WSL work machine
+      # WSL work machines
       "jabdinghoff@LT-JABDINGHOFF" = mkHome {
         system = "x86_64-linux";
         username = "jabdinghoff";
         hostname = "LT-JABDINGHOFF";
+        modules = [./profiles/wsl.nix];
+      };
+
+      "jabdinghoff@sf-jabdinghoff" = mkHome {
+        system = "x86_64-linux";
+        username = "jabdinghoff";
+        hostname = "sf-jabdinghoff";
         modules = [./profiles/wsl.nix];
       };
 
