@@ -56,7 +56,8 @@
     ../programs/direnv
     ../programs/git
     ../programs/neovim
-    ../programs/oh-my-posh
+    ../programs/nushell
+    ../programs/starship
     ../programs/ssh
     ../programs/tmux
     ../programs/vim

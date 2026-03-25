@@ -25,6 +25,10 @@
       url = "github:zeratax/neovim-config";
       flake = false;
     };
+
+    jj-starship = {
+      url = "github:dmmulroy/jj-starship";
+    };
   };
 
   outputs = {
@@ -34,6 +38,7 @@
     nixos-vscode-server,
     mpv-prescalers,
     neovim-config,
+    jj-starship,
     ...
   }: let
     # Helper function to create a home configuration
@@ -49,7 +54,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship;
         };
         modules =
           [
