@@ -77,7 +77,7 @@
       };
 
       "jabdinghoff@sf-jabdinghoff" = mkHome {
-        system = "x86_64-linux";
+        system = "aarch64-linux";
         username = "jabdinghoff";
         hostname = "sf-jabdinghoff";
         modules = [./profiles/wsl.nix];
