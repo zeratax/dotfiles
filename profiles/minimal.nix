@@ -53,7 +53,9 @@
 
   imports = [
     ../programs/bash
+    ../programs/carapace
     ../programs/direnv
+    ../programs/eza
     ../programs/git
     ../programs/neovim
     ../programs/nushell
