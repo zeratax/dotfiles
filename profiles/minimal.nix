@@ -29,6 +29,7 @@
       bat
       cachix
       nh
+      nix-search-cli
       nixfmt-rfc-style
       wget
       volta
@@ -42,7 +43,10 @@
 
       # productivity
       ## general
-      neofetch
+      btop
+      fastfetch
+      fd
+      tealdeer
       tree
       xclip
 
@@ -56,6 +60,7 @@
     ../programs/carapace
     ../programs/direnv
     ../programs/eza
+    ../programs/fzf
     ../programs/git
     ../programs/neovim
     ../programs/nushell

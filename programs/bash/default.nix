@@ -20,19 +20,19 @@
       # update window size after every command
       "checkwinsize"
       # turn on recursive globbing (enables ** to recurse all directories)
-      "globstar 2> /dev/null"
+      "globstar"
       # case-insensitive globbing (used in pathname expansion)
-      "nocaseglob;"
+      "nocaseglob"
       # append to the history file, don't overwrite it
       "histappend"
       # save multi-line commands as one command
       "cmdhist"
       # prepend cd to directory names automatically
-      "autocd 2> /dev/null"
+      "autocd"
       # correct spelling errors during tab-completion
-      "dirspell 2> /dev/null"
+      "dirspell"
       # correct spelling errors in arguments supplied to cd
-      "cdspell 2> /dev/null"
+      "cdspell"
       # this allows you to bookmark your favorite places across the file system
       # define a variable containing a path and you will be able to cd into it regardless of the directory you're in
       "cdable_vars"

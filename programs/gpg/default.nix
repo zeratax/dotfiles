@@ -1,12 +1,19 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  userConfig,
+  ...
+}: {
   programs.gpg = {
     enable = true;
-    settings = {default-key = "0x8333735E784DF9D4";};
+    settings = lib.mkIf (userConfig.gpgSigningKey != null) {
+      default-key = userConfig.gpgSigningKey;
+    };
   };
 
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = true;
+    enableSshSupport = userConfig.gpgSignByDefault;
     pinentryPackage = pkgs.pinentry-curses;
     extraConfig = ''
       allow-loopback-pinentry

@@ -1,13 +1,6 @@
-{
-  lib,
-  userConfig,
-  ...
-}: {
+{userConfig, ...}: {
   programs.git = {
     enable = true;
-
-    userName = userConfig.gitUserName;
-    userEmail = userConfig.gitUserEmail;
 
     signing = {
       signByDefault = userConfig.gpgSignByDefault;
@@ -17,9 +10,12 @@
     # Large File Storage
     lfs.enable = true;
 
-    extraConfig = {
-      core = {editor = "vim";};
-
+    settings = {
+      user = {
+        name = userConfig.gitUserName;
+        email = userConfig.gitUserEmail;
+      };
+      core.editor = "vim";
       diff.tool = "vimdiff";
       merge.tool = "vimdiff";
       merge.conflictstyle = "diff3";
