@@ -1,13 +1,17 @@
-{config, ...}: {
+{
+  lib,
+  userConfig,
+  ...
+}: {
   programs.git = {
     enable = true;
 
-    userName = "ZerataX";
-    userEmail = "mail@zera.tax";
+    userName = userConfig.gitUserName;
+    userEmail = userConfig.gitUserEmail;
 
     signing = {
-      signByDefault = true;
-      key = config.programs.gpg.settings.default-key;
+      signByDefault = userConfig.gpgSignByDefault;
+      key = userConfig.gpgSigningKey;
     };
 
     # Large File Storage

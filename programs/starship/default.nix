@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   jj-starship,
   pkgs,
@@ -11,8 +10,6 @@
 
   programs.starship = {
     enable = true;
-    enableBashIntegration = lib.mkIf config.programs.bash.enable true;
-    enableNushellIntegration = lib.mkIf config.programs.nushell.enable true;
     settings = {
       add_newline = false;
       command_timeout = 3000;

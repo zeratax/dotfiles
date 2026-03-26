@@ -41,12 +41,22 @@
     jj-starship,
     ...
   }: let
+    defaultUserConfig = {
+      gitUserName = "ZerataX";
+      gitUserEmail = "mail@zera.tax";
+      gpgSigningKey = "0x8333735E784DF9D4";
+      gpgSignByDefault = true;
+      sshKeyFile = "~/.ssh/id_rsa";
+      githubUser = "ZerataX";
+    };
+
     # Helper function to create a home configuration
     mkHome = {
       system,
       username,
       hostname,
       modules,
+      userConfig ? defaultUserConfig,
     }:
       home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
@@ -54,7 +64,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship userConfig;
         };
         modules =
           [
@@ -74,6 +84,14 @@
         username = "jabdinghoff";
         hostname = "LT-JABDINGHOFF";
         modules = [./profiles/wsl.nix];
+        userConfig = {
+          gitUserName = "Jona Abdinghoff";
+          gitUserEmail = "jabdinghoff@lancier-monitoring.de";
+          gpgSigningKey = null;
+          gpgSignByDefault = false;
+          sshKeyFile = "~/.ssh/id_ed25519";
+          githubUser = "jabdinghoff";
+        };
       };
 
       "jabdinghoff@sf-jabdinghoff" = mkHome {
@@ -81,6 +99,14 @@
         username = "jabdinghoff";
         hostname = "sf-jabdinghoff";
         modules = [./profiles/wsl.nix];
+        userConfig = {
+          gitUserName = "Jona Abdinghoff";
+          gitUserEmail = "jabdinghoff@lancier-monitoring.de";
+          gpgSigningKey = null;
+          gpgSignByDefault = false;
+          sshKeyFile = "~/.ssh/id_ed25519";
+          githubUser = "jabdinghoff";
+        };
       };
 
       # Personal desktop (example - adjust as needed)
