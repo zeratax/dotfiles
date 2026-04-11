@@ -5,7 +5,7 @@
   ...
 }: {
   home.packages = [
-    jj-starship.packages.${pkgs.system}.default
+    jj-starship.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   programs.starship = {

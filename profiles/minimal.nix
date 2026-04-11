@@ -16,7 +16,7 @@
 
   home = {
     sessionVariables = {
-      FLAKE = "$HOME/git/dotfiles";
+      NH_FLAKE = "$HOME/git/dotfiles";
       # ANTHROPIC_API_KEY = builtins.readFile ../secrets/anthropic.key;
     };
     shellAliases = {
