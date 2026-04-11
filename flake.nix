@@ -23,7 +23,7 @@
 
     neovim-config = {
       url = "github:zeratax/neovim-config";
-      flake = false;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     jj-starship = {
