@@ -119,11 +119,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775947100,
-        "narHash": "sha256-8Jv1YFJvqW79XzXry7SJ1VEWI1mEj/YdFFLZktExxh0=",
+        "lastModified": 1775947362,
+        "narHash": "sha256-/CMklaCWChugBv3f9suszw4ayxamx20NE703RE8fWPI=",
         "owner": "zeratax",
         "repo": "neovim-config",
-        "rev": "f035883b1ad321f1dd6cb040b07a82ba1e1ce1fc",
+        "rev": "683367b8eaa8dd72cfe4fc47bb45e1e3a452fed8",
         "type": "github"
       },
       "original": {
