@@ -1,4 +1,24 @@
-{...}: {
+{...}: let
+  # Helper to create a bind entry with ordered actions
+  bind = keys: actions: {
+    bind = {
+      _args = if builtins.isList keys then keys else [keys];
+      _children = actions;
+    };
+  };
+  # Action with argument
+  action = name: arg: {${name}._args = [arg];};
+  # Action with no argument
+  bare = name: {${name} = {};};
+  # Action with children (for LaunchOrFocusPlugin etc.)
+  actionWith = name: arg: children: {
+    ${name} = {
+      _args = [arg];
+    } // children;
+  };
+  # Common combo: action then switch to locked
+  locked = actions: actions ++ [(action "SwitchToMode" "locked")];
+in {
   programs.bash = {
     shellAliases = {
       zwd = "zellij attach $(echo $(pwd) | sed 's/\\//\\\\/g') -c";
@@ -11,617 +31,350 @@
     enableBashIntegration =
       false; # https://github.com/zellij-org/zellij/issues/2100
     settings = {
-      # keybinds = {
-      #   locked = [{
-      #     action = [{ SwitchToMode = "Normal"; }];
-      #     key = [{ Ctrl = "b"; }];
-      #   }];
-      #   normal = [
-      #     {
-      #       action = [ { Write = [ 2 ]; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "b"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [ { Ctrl = "b"; } { Char = " "; } { Char = "\n"; } ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Pane"; }];
-      #       key = [{ Char = "p"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Resize"; }];
-      #       key = [{ Char = "r"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Tab"; }];
-      #       key = [{ Char = "t"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Scroll"; }];
-      #       key = [{ Char = "s"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Session"; }];
-      #       key = [{ Char = "o"; }];
-      #     }
-      #     {
-      #       action = [ "Quit" ];
-      #       key = [{ Ctrl = "q"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = null; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Alt = "n"; }];
-      #     }
-      #     {
-      #       action = [ { NewTab = null; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "N"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = null; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "n"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ { MoveFocusOrTab = "Left"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "h"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ { MoveFocusOrTab = "Right"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "l"; }];
-      #     }
-      #     {
-      #       action = [ { MoveFocus = "Down"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "j"; }];
-      #     }
-      #     {
-      #       action = [ { MoveFocus = "Up"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "k"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocusOrTab = "Left"; }];
-      #       key = [ { Char = "H"; } { Alt = "h"; } ];
-      #     }
-      #     {
-      #       action = [{ MoveFocusOrTab = "Right"; }];
-      #       key = [ { Char = "L"; } { Alt = "l"; } ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [ { Char = "J"; } { Alt = "j"; } ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [ { Char = "K"; } { Alt = "k"; } ];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [ { Char = "["; } { Alt = "["; } ];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [ { Char = "]"; } { Alt = "["; } ];
-      #     }
-      #     {
-      #       action = [ { NewPane = "Down"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "-"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = "Right"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "\\"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 1; }];
-      #       key = [{ Char = "1"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 2; }];
-      #       key = [{ Char = "2"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 3; }];
-      #       key = [{ Char = "3"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 4; }];
-      #       key = [{ Char = "4"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 5; }];
-      #       key = [{ Char = "5"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 6; }];
-      #       key = [{ Char = "6"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 7; }];
-      #       key = [{ Char = "7"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 8; }];
-      #       key = [{ Char = "8"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 9; }];
-      #       key = [{ Char = "9"; }];
-      #     }
-      #     {
-      #       action = [{ Resize = "Increase"; }];
-      #       key = [{ Char = "="; }];
-      #     }
-      #     {
-      #       action = [{ Resize = "Increase"; }];
-      #       key = [{ Char = "+"; }];
-      #     }
-      #     {
-      #       action = [{ Resize = "Decrease"; }];
-      #       key = [{ Char = "-"; }];
-      #     }
-      #     {
-      #       action = [{ Resize = "Left"; }];
-      #       key = [ "Left" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Down"; }];
-      #       key = [ "Down" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Up"; }];
-      #       key = [ "Up" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Right"; }];
-      #       key = [ "Right" ];
-      #     }
-      #     {
-      #       action = [ "ToggleTab" ];
-      #       key = [ { Char = "      "; } { Char = "t"; } ];
-      #     }
-      #     {
-      #       action =
-      #         [ { SwitchToMode = "RenamePane"; } { PaneNameInput = [ 0 ]; } ];
-      #       key = [{ Char = "c"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ { SwitchToMode = "RenameTab"; } { TabNameInput = [ 0 ]; } ];
-      #       key = [{ Char = "C"; }];
-      #     }
-      #     {
-      #       action = [ "EditScrollback" { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "e"; }];
-      #     }
-      #   ];
-      #   pane = [
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [{ Ctrl = "b"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Normal"; }];
-      #       key = [{ Ctrl = "p"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Tab"; }];
-      #       key = [{ Ctrl = "t"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [ { Ctrl = "r"; } { Char = "\n"; } { Char = " "; } ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Scroll"; }];
-      #       key = [{ Ctrl = "s"; }];
-      #     }
-      #     {
-      #       action = [ "Quit" ];
-      #       key = [{ Ctrl = "q"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Left"; }];
-      #       key = [ { Alt = "h"; } "Left" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Right"; }];
-      #       key = [ { Alt = "l"; } "Right" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [ { Alt = "j"; } "Down" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [ { Alt = "k"; } "Up" ];
-      #     }
-      #     {
-      #       action = [ "SwitchFocus" ];
-      #       key = [{ Char = "p"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = null; } { SwitchToMode = "Locked"; } ];
-      #       key = [ { Char = "n"; } { Alt = "n"; } ];
-      #     }
-      #     {
-      #       action = [{ NewPane = null; }];
-      #       key = [{ Char = "N"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = "Down"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "d"; }];
-      #     }
-      #     {
-      #       action = [ { NewPane = "Right"; } { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "r"; }];
-      #     }
-      #     {
-      #       action = [ "TogglePaneFrames" { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "z"; }];
-      #     }
-      #     {
-      #       action = [ "TogglePaneFrames" ];
-      #       key = [{ Char = "Z"; }];
-      #     }
-      #     {
-      #       action = [{ NewPane = "Down"; }];
-      #       key = [{ Char = "D"; }];
-      #     }
-      #     {
-      #       action = [{ NewPane = "Right"; }];
-      #       key = [{ Char = "R"; }];
-      #     }
-      #     {
-      #       action = [ "CloseFocus" { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "x"; }];
-      #     }
-      #     {
-      #       action = [ "CloseFocus" ];
-      #       key = [{ Char = "X"; }];
-      #     }
-      #     {
-      #       action = [ "ToggleFocusFullscreen" { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "f"; }];
-      #     }
-      #     {
-      #       action = [ "ToggleFocusFullscreen" ];
-      #       key = [{ Char = "F"; }];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [{ Alt = "["; }];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [{ Alt = "]"; }];
-      #     }
-      #     {
-      #       action = [ "ToggleFocusFullscreen" { SwitchToMode = "Normal"; } ];
-      #       key = [{ Char = "f"; }];
-      #     }
-      #     {
-      #       action = [ "TogglePaneFrames" { SwitchToMode = "Normal"; } ];
-      #       key = [{ Char = "z"; }];
-      #     }
-      #     {
-      #       action = [ "ToggleFloatingPanes" { SwitchToMode = "Normal"; } ];
-      #       key = [{ Char = "w"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ "TogglePaneEmbedOrFloating" { SwitchToMode = "Normal"; } ];
-      #       key = [{ Char = "e"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ { SwitchToMode = "RenamePane"; } { PaneNameInput = [ 0 ]; } ];
-      #       key = [{ Char = "c"; }];
-      #     }
-      #   ];
-      #   renametab = [
-      #     {
-      #       action = [{ SwitchToMode = "Normal"; }];
-      #       key = [{ Ctrl = "r"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [ { Ctrl = "b"; } { Ctrl = "s"; } { Char = " "; } ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Tab"; }];
-      #       key = [{ Char = "\n"; }];
-      #     }
-      #     {
-      #       action = [ { TabNameInput = [ 27 ]; } { SwitchToMode = "Tab"; } ];
-      #       key = [ "Esc" ];
-      #     }
-      #     {
-      #       action = [{ NewPane = null; }];
-      #       key = [{ Alt = "n"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Left"; }];
-      #       key = [{ Alt = "h"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Right"; }];
-      #       key = [{ Alt = "l"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [{ Alt = "j"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [{ Alt = "k"; }];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [{ Alt = "["; }];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [{ Alt = "]"; }];
-      #     }
-      #   ];
-      #   resize = [
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [{ Ctrl = "b"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Pane"; }];
-      #       key = [{ Ctrl = "p"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Tab"; }];
-      #       key = [{ Ctrl = "t"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [ { Ctrl = "r"; } { Char = "\n"; } { Char = " "; } ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Scroll"; }];
-      #       key = [{ Ctrl = "s"; }];
-      #     }
-      #     {
-      #       action = [ "Quit" ];
-      #       key = [{ Ctrl = "q"; }];
-      #     }
-      #     {
-      #       action = [{ Resize = "Left"; }];
-      #       key = [ { Char = "h"; } "Left" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Down"; }];
-      #       key = [ { Char = "j"; } "Down" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Up"; }];
-      #       key = [ { Char = "k"; } "Up" ];
-      #     }
-      #     {
-      #       action = [{ Resize = "Right"; }];
-      #       key = [ { Char = "l"; } "Right" ];
-      #     }
-      #     {
-      #       action = [{ NewPane = null; }];
-      #       key = [{ Alt = "n"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Left"; }];
-      #       key = [ { Alt = "h"; } "Left" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Right"; }];
-      #       key = [ { Alt = "l"; } "Right" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [ { Alt = "j"; } "Down" ];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [ { Alt = "k"; } "Up" ];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [{ Alt = "["; }];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [{ Alt = "]"; }];
-      #     }
-      #   ];
-      #   scroll = [
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [
-      #         { Ctrl = "r"; }
-      #         { Ctrl = "s"; }
-      #         { Char = " "; }
-      #         { Char = "\n"; }
-      #       ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Tab"; }];
-      #       key = [{ Ctrl = "t"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Normal"; }];
-      #       key = [{ Ctrl = "s"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Pane"; }];
-      #       key = [{ Ctrl = "p"; }];
-      #     }
-      #     {
-      #       action = [ "Quit" ];
-      #       key = [{ Ctrl = "q"; }];
-      #     }
-      #     {
-      #       action = [ "ScrollDown" ];
-      #       key = [ { Char = "j"; } "Down" ];
-      #     }
-      #     {
-      #       action = [ "ScrollUp" ];
-      #       key = [ { Char = "k"; } "Up" ];
-      #     }
-      #     {
-      #       action = [ "PageScrollDown" ];
-      #       key = [ { Ctrl = "f"; } "PageDown" ];
-      #     }
-      #     {
-      #       action = [ "PageScrollUp" ];
-      #       key = [ { Ctrl = "b"; } "PageUp" ];
-      #     }
-      #     {
-      #       action = [{ NewPane = null; }];
-      #       key = [{ Alt = "n"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Left"; }];
-      #       key = [{ Alt = "h"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Right"; }];
-      #       key = [{ Alt = "l"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [{ Alt = "j"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [{ Alt = "k"; }];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [{ Alt = "["; }];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [{ Alt = "]"; }];
-      #     }
-      #     {
-      #       action = [ "EditScrollback" { SwitchToMode = "Locked"; } ];
-      #       key = [{ Char = "e"; }];
-      #     }
-      #   ];
-      #   tab = [
-      #     {
-      #       action = [{ SwitchToMode = "Normal"; }];
-      #       key = [{ Ctrl = "t"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Pane"; }];
-      #       key = [{ Ctrl = "p"; }];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Locked"; }];
-      #       key = [ { Ctrl = "b"; } { Char = "\n"; } { Char = " "; } ];
-      #     }
-      #     {
-      #       action = [{ SwitchToMode = "Scroll"; }];
-      #       key = [{ Ctrl = "s"; }];
-      #     }
-      #     {
-      #       action =
-      #         [ { SwitchToMode = "RenameTab"; } { TabNameInput = [ 0 ]; } ];
-      #       key = [{ Char = "r"; }];
-      #     }
-      #     {
-      #       action = [ "Quit" ];
-      #       key = [{ Ctrl = "q"; }];
-      #     }
-      #     {
-      #       action = [ "FocusPreviousPane" ];
-      #       key = [{ Alt = "["; }];
-      #     }
-      #     {
-      #       action = [ "FocusNextPane" ];
-      #       key = [{ Alt = "]"; }];
-      #     }
-      #     {
-      #       action = [ "GoToPreviousTab" ];
-      #       key = [{ Char = "h"; }];
-      #     }
-      #     {
-      #       action = [ "GoToNextTab" ];
-      #       key = [{ Char = "l"; }];
-      #     }
-      #     {
-      #       action = [ "GoToNextTab" ];
-      #       key = [{ Char = "j"; }];
-      #     }
-      #     {
-      #       action = [ "GoToPreviousTab" ];
-      #       key = [{ Char = "k"; }];
-      #     }
-      #     {
-      #       action = [{ NewTab = null; }];
-      #       key = [{ Char = "n"; }];
-      #     }
-      #     {
-      #       action = [ "CloseTab" ];
-      #       key = [{ Char = "x"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Left"; }];
-      #       key = [{ Alt = "h"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Right"; }];
-      #       key = [{ Alt = "l"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Down"; }];
-      #       key = [{ Alt = "j"; }];
-      #     }
-      #     {
-      #       action = [{ MoveFocus = "Up"; }];
-      #       key = [{ Alt = "k"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 1; }];
-      #       key = [{ Char = "1"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 2; }];
-      #       key = [{ Char = "2"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 3; }];
-      #       key = [{ Char = "3"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 4; }];
-      #       key = [{ Char = "4"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 5; }];
-      #       key = [{ Char = "5"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 6; }];
-      #       key = [{ Char = "6"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 7; }];
-      #       key = [{ Char = "7"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 8; }];
-      #       key = [{ Char = "8"; }];
-      #     }
-      #     {
-      #       action = [{ GoToTab = 9; }];
-      #       key = [{ Char = "9"; }];
-      #     }
-      #   ];
-      #   unbind = true;
-      # };
+      default_shell = "nu";
+      default_mode = "locked";
+      keybinds = {
+        _props.clear-defaults = true;
+        _children = [
+          # locked
+          {
+            locked._children = [
+              (bind "Ctrl g" [(action "SwitchToMode" "normal")])
+            ];
+          }
+          # pane
+          {
+            pane._children = [
+              (bind "left" [(action "MoveFocus" "left")])
+              (bind "down" [(action "MoveFocus" "down")])
+              (bind "up" [(action "MoveFocus" "up")])
+              (bind "right" [(action "MoveFocus" "right")])
+              (bind "c" [(action "SwitchToMode" "renamepane") (actionWith "PaneNameInput" 0 {})])
+              (bind "d" (locked [(action "NewPane" "down")]))
+              (bind "e" (locked [(bare "TogglePaneEmbedOrFloating")]))
+              (bind "f" (locked [(bare "ToggleFocusFullscreen")]))
+              (bind "h" [(action "MoveFocus" "left")])
+              (bind "i" (locked [(bare "TogglePanePinned")]))
+              (bind "j" [(action "MoveFocus" "down")])
+              (bind "k" [(action "MoveFocus" "up")])
+              (bind "l" [(action "MoveFocus" "right")])
+              (bind "n" (locked [(bare "NewPane")]))
+              (bind "p" [(action "SwitchToMode" "normal")])
+              (bind "r" (locked [(action "NewPane" "right")]))
+              (bind "s" (locked [(action "NewPane" "stacked")]))
+              (bind "w" (locked [(bare "ToggleFloatingPanes")]))
+              (bind "x" (locked [(bare "CloseFocus")]))
+              (bind "z" (locked [(bare "TogglePaneFrames")]))
+              (bind "tab" [(bare "SwitchFocus")])
+            ];
+          }
+          # tab
+          {
+            tab._children = [
+              (bind "left" [(bare "GoToPreviousTab")])
+              (bind "down" [(bare "GoToNextTab")])
+              (bind "up" [(bare "GoToPreviousTab")])
+              (bind "right" [(bare "GoToNextTab")])
+              (bind "1" (locked [(actionWith "GoToTab" 1 {})]))
+              (bind "2" (locked [(actionWith "GoToTab" 2 {})]))
+              (bind "3" (locked [(actionWith "GoToTab" 3 {})]))
+              (bind "4" (locked [(actionWith "GoToTab" 4 {})]))
+              (bind "5" (locked [(actionWith "GoToTab" 5 {})]))
+              (bind "6" (locked [(actionWith "GoToTab" 6 {})]))
+              (bind "7" (locked [(actionWith "GoToTab" 7 {})]))
+              (bind "8" (locked [(actionWith "GoToTab" 8 {})]))
+              (bind "9" (locked [(actionWith "GoToTab" 9 {})]))
+              (bind "[" (locked [(bare "BreakPaneLeft")]))
+              (bind "]" (locked [(bare "BreakPaneRight")]))
+              (bind "b" (locked [(bare "BreakPane")]))
+              (bind "h" [(bare "GoToPreviousTab")])
+              (bind "j" [(bare "GoToNextTab")])
+              (bind "k" [(bare "GoToPreviousTab")])
+              (bind "l" [(bare "GoToNextTab")])
+              (bind "n" (locked [(bare "NewTab")]))
+              (bind "r" [(action "SwitchToMode" "renametab") (actionWith "TabNameInput" 0 {})])
+              (bind "s" (locked [(bare "ToggleActiveSyncTab")]))
+              (bind "t" [(action "SwitchToMode" "normal")])
+              (bind "x" (locked [(bare "CloseTab")]))
+              (bind "tab" [(bare "ToggleTab")])
+            ];
+          }
+          # resize
+          {
+            resize._children = [
+              (bind "left" [(action "Resize" "Increase left")])
+              (bind "down" [(action "Resize" "Increase down")])
+              (bind "up" [(action "Resize" "Increase up")])
+              (bind "right" [(action "Resize" "Increase right")])
+              (bind "+" [(action "Resize" "Increase")])
+              (bind "-" [(action "Resize" "Decrease")])
+              (bind "=" [(action "Resize" "Increase")])
+              (bind "H" [(action "Resize" "Decrease left")])
+              (bind "J" [(action "Resize" "Decrease down")])
+              (bind "K" [(action "Resize" "Decrease up")])
+              (bind "L" [(action "Resize" "Decrease right")])
+              (bind "h" [(action "Resize" "Increase left")])
+              (bind "j" [(action "Resize" "Increase down")])
+              (bind "k" [(action "Resize" "Increase up")])
+              (bind "l" [(action "Resize" "Increase right")])
+              (bind "r" [(action "SwitchToMode" "normal")])
+            ];
+          }
+          # move
+          {
+            move._children = [
+              (bind "left" [(action "MovePane" "left")])
+              (bind "down" [(action "MovePane" "down")])
+              (bind "up" [(action "MovePane" "up")])
+              (bind "right" [(action "MovePane" "right")])
+              (bind "h" [(action "MovePane" "left")])
+              (bind "j" [(action "MovePane" "down")])
+              (bind "k" [(action "MovePane" "up")])
+              (bind "l" [(action "MovePane" "right")])
+              (bind "m" [(action "SwitchToMode" "normal")])
+              (bind "n" [(bare "MovePane")])
+              (bind "p" [(bare "MovePaneBackwards")])
+              (bind "tab" [(bare "MovePane")])
+            ];
+          }
+          # scroll
+          {
+            scroll._children = [
+              (bind "Alt left" [(action "MoveFocusOrTab" "left") (action "SwitchToMode" "locked")])
+              (bind "Alt down" [(action "MoveFocus" "down") (action "SwitchToMode" "locked")])
+              (bind "Alt up" [(action "MoveFocus" "up") (action "SwitchToMode" "locked")])
+              (bind "Alt right" [(action "MoveFocusOrTab" "right") (action "SwitchToMode" "locked")])
+              (bind "e" (locked [(bare "EditScrollback")]))
+              (bind "f" [(action "SwitchToMode" "entersearch") (actionWith "SearchInput" 0 {})])
+              (bind "Alt h" [(action "MoveFocusOrTab" "left") (action "SwitchToMode" "locked")])
+              (bind "Alt j" [(action "MoveFocus" "down") (action "SwitchToMode" "locked")])
+              (bind "Alt k" [(action "MoveFocus" "up") (action "SwitchToMode" "locked")])
+              (bind "Alt l" [(action "MoveFocusOrTab" "right") (action "SwitchToMode" "locked")])
+              (bind "s" [(action "SwitchToMode" "normal")])
+            ];
+          }
+          # search
+          {
+            search._children = [
+              (bind "c" [(action "SearchToggleOption" "CaseSensitivity")])
+              (bind "n" [(action "Search" "down")])
+              (bind "o" [(action "SearchToggleOption" "WholeWord")])
+              (bind "p" [(action "Search" "up")])
+              (bind "w" [(action "SearchToggleOption" "Wrap")])
+            ];
+          }
+          # session
+          {
+            session._children = [
+              (bind "a" [
+                (actionWith "LaunchOrFocusPlugin" "zellij:about" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+              (bind "c" [
+                (actionWith "LaunchOrFocusPlugin" "configuration" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+              (bind "d" [(bare "Detach")])
+              (bind "l" [
+                (actionWith "LaunchOrFocusPlugin" "zellij:layout-manager" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+              (bind "o" [(action "SwitchToMode" "normal")])
+              (bind "p" [
+                (actionWith "LaunchOrFocusPlugin" "plugin-manager" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+              (bind "s" [
+                (actionWith "LaunchOrFocusPlugin" "zellij:share" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+              (bind "w" [
+                (actionWith "LaunchOrFocusPlugin" "session-manager" {
+                  floating = true;
+                  move_to_focused_tab = true;
+                })
+                (action "SwitchToMode" "locked")
+              ])
+            ];
+          }
+          # shared_among "normal" "locked"
+          {
+            shared_among = {
+              _args = ["normal" "locked"];
+              _children = [
+                (bind "Alt left" [(action "MoveFocusOrTab" "left")])
+                (bind "Alt down" [(action "MoveFocus" "down")])
+                (bind "Alt up" [(action "MoveFocus" "up")])
+                (bind "Alt right" [(action "MoveFocusOrTab" "right")])
+                (bind "Alt +" [(action "Resize" "Increase")])
+                (bind "Alt -" [(action "Resize" "Decrease")])
+                (bind "Alt =" [(action "Resize" "Increase")])
+                (bind "Alt [" [(bare "PreviousSwapLayout")])
+                (bind "Alt ]" [(bare "NextSwapLayout")])
+                (bind "Alt f" [(bare "ToggleFloatingPanes")])
+                (bind "Alt h" [(action "MoveFocusOrTab" "left")])
+                (bind "Alt i" [(action "MoveTab" "left")])
+                (bind "Alt j" [(action "MoveFocus" "down")])
+                (bind "Alt k" [(action "MoveFocus" "up")])
+                (bind "Alt l" [(action "MoveFocusOrTab" "right")])
+                (bind "Alt n" [(bare "NewPane")])
+                (bind "Alt o" [(action "MoveTab" "right")])
+                (bind "Alt p" [(bare "TogglePaneInGroup")])
+                (bind "Alt Shift p" [(bare "ToggleGroupMarking")])
+              ];
+            };
+          }
+          # shared_except "locked" "renametab" "renamepane"
+          {
+            shared_except = {
+              _args = ["locked" "renametab" "renamepane"];
+              _children = [
+                (bind "Ctrl g" [(action "SwitchToMode" "locked")])
+                (bind "Ctrl q" [(bare "Quit")])
+              ];
+            };
+          }
+          # shared_except "locked" "entersearch"
+          {
+            shared_except = {
+              _args = ["locked" "entersearch"];
+              _children = [
+                (bind "enter" [(action "SwitchToMode" "locked")])
+              ];
+            };
+          }
+          # shared_except "locked" "entersearch" "renametab" "renamepane"
+          {
+            shared_except = {
+              _args = ["locked" "entersearch" "renametab" "renamepane"];
+              _children = [
+                (bind "esc" [(action "SwitchToMode" "locked")])
+              ];
+            };
+          }
+          # shared_except "locked" "entersearch" "renametab" "renamepane" "move"
+          {
+            shared_except = {
+              _args = ["locked" "entersearch" "renametab" "renamepane" "move"];
+              _children = [
+                (bind "m" [(action "SwitchToMode" "move")])
+              ];
+            };
+          }
+          # shared_except "locked" "entersearch" "search" "renametab" "renamepane" "session"
+          {
+            shared_except = {
+              _args = ["locked" "entersearch" "search" "renametab" "renamepane" "session"];
+              _children = [
+                (bind "o" [(action "SwitchToMode" "session")])
+              ];
+            };
+          }
+          # shared_except "locked" "tab" "entersearch" "renametab" "renamepane"
+          {
+            shared_except = {
+              _args = ["locked" "tab" "entersearch" "renametab" "renamepane"];
+              _children = [
+                (bind "t" [(action "SwitchToMode" "tab")])
+              ];
+            };
+          }
+          # shared_among "normal" "resize" "tab" "scroll" "prompt" "tmux"
+          {
+            shared_among = {
+              _args = ["normal" "resize" "tab" "scroll" "prompt" "tmux"];
+              _children = [
+                (bind "p" [(action "SwitchToMode" "pane")])
+              ];
+            };
+          }
+          # shared_among "normal" "resize" "search" "move" "prompt" "tmux"
+          {
+            shared_among = {
+              _args = ["normal" "resize" "search" "move" "prompt" "tmux"];
+              _children = [
+                (bind "s" [(action "SwitchToMode" "scroll")])
+              ];
+            };
+          }
+          # shared_except "locked" "resize" "pane" "tab" "entersearch" "renametab" "renamepane"
+          {
+            shared_except = {
+              _args = ["locked" "resize" "pane" "tab" "entersearch" "renametab" "renamepane"];
+              _children = [
+                (bind "r" [(action "SwitchToMode" "resize")])
+              ];
+            };
+          }
+          # shared_among "scroll" "search"
+          {
+            shared_among = {
+              _args = ["scroll" "search"];
+              _children = [
+                (bind "PageDown" [(bare "PageScrollDown")])
+                (bind "PageUp" [(bare "PageScrollUp")])
+                (bind "left" [(bare "PageScrollUp")])
+                (bind "down" [(bare "ScrollDown")])
+                (bind "up" [(bare "ScrollUp")])
+                (bind "right" [(bare "PageScrollDown")])
+                (bind "Ctrl b" [(bare "PageScrollUp")])
+                (bind "Ctrl c" [(bare "ScrollToBottom") (action "SwitchToMode" "locked")])
+                (bind "d" [(bare "HalfPageScrollDown")])
+                (bind "Ctrl f" [(bare "PageScrollDown")])
+                (bind "h" [(bare "PageScrollUp")])
+                (bind "j" [(bare "ScrollDown")])
+                (bind "k" [(bare "ScrollUp")])
+                (bind "l" [(bare "PageScrollDown")])
+                (bind "u" [(bare "HalfPageScrollUp")])
+              ];
+            };
+          }
+          # entersearch
+          {
+            entersearch._children = [
+              (bind "Ctrl c" [(action "SwitchToMode" "scroll")])
+              (bind "esc" [(action "SwitchToMode" "scroll")])
+              (bind "enter" [(action "SwitchToMode" "search")])
+            ];
+          }
+          # renametab
+          {
+            renametab._children = [
+              (bind "esc" [(bare "UndoRenameTab") (action "SwitchToMode" "tab")])
+            ];
+          }
+          # shared_among "renametab" "renamepane"
+          {
+            shared_among = {
+              _args = ["renametab" "renamepane"];
+              _children = [
+                (bind "Ctrl c" [(action "SwitchToMode" "locked")])
+              ];
+            };
+          }
+          # renamepane
+          {
+            renamepane._children = [
+              (bind "esc" [(bare "UndoRenamePane") (action "SwitchToMode" "pane")])
+            ];
+          }
+        ];
+      };
     };
   };
 }
