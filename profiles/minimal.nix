@@ -17,7 +17,6 @@
   home = {
     sessionVariables = {
       NH_FLAKE = "$HOME/git/dotfiles";
-      # ANTHROPIC_API_KEY = builtins.readFile ../secrets/anthropic.key;
     };
     shellAliases = {
       # nh with local neovim-config override for development
@@ -35,7 +34,6 @@
       volta
 
       # version control
-      git-crypt
       gh
 
       jq
