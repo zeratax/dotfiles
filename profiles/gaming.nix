@@ -9,6 +9,11 @@
 
   home = {
     packages = with pkgs; [
+      # games
+      obs-studio
+      parsec-bin
+      protontricks
+
       # media
       transmission_4-qt
       spotify
