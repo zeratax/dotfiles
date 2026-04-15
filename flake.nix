@@ -54,7 +54,6 @@
     mkHome = {
       system,
       username,
-      hostname,
       modules,
       userConfig ? defaultUserConfig,
     }:
@@ -82,7 +81,6 @@
       "jabdinghoff@LT-JABDINGHOFF" = mkHome {
         system = "x86_64-linux";
         username = "jabdinghoff";
-        hostname = "LT-JABDINGHOFF";
         modules = [./profiles/wsl.nix];
         userConfig = {
           gitUserName = "Jona Abdinghoff";
@@ -97,7 +95,6 @@
       "jabdinghoff@sf-jabdinghoff" = mkHome {
         system = "aarch64-linux";
         username = "jabdinghoff";
-        hostname = "sf-jabdinghoff";
         modules = [./profiles/wsl.nix];
         userConfig = {
           gitUserName = "Jona Abdinghoff";
@@ -112,7 +109,6 @@
       "jonaa@kaine" = mkHome {
         system = "x86_64-linux";
         username = "jonaa";
-        hostname = "kaine";
         modules = [./profiles/gaming.nix];
       };
 
@@ -120,7 +116,6 @@
       "minimal" = mkHome {
         system = "x86_64-linux";
         username = builtins.getEnv "USER";
-        hostname = "generic";
         modules = [./profiles/minimal.nix];
       };
     };
