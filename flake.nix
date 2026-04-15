@@ -109,12 +109,11 @@
         };
       };
 
-      # Personal desktop (example - adjust as needed)
-      "zeratax@desktop" = mkHome {
+      "jonaa@kaine" = mkHome {
         system = "x86_64-linux";
-        username = "zeratax";
-        hostname = "desktop";
-        modules = [./profiles/full.nix];
+        username = "jonaa";
+        hostname = "kaine";
+        modules = [./profiles/gaming.nix];
       };
 
       # Minimal profile for any machine
