@@ -2,7 +2,8 @@
   pkgs,
   nur,
   ...
-}: {
+}:
+{
   nixpkgs.config = {
     allowUnfree = true;
   };
@@ -62,14 +63,14 @@
     ../programs/eza
     ../programs/fzf
     ../programs/git
+    ../programs/jujutsu
     ../programs/neovim
     ../programs/nushell
-    ../programs/starship
     ../programs/ssh
+    ../programs/starship
     ../programs/tmux
     ../programs/vim
     ../programs/yaml2nix.nix
-    ../programs/jujutsu
     ../programs/zellij
     ../programs/zoxide
   ];
