@@ -32,7 +32,7 @@
       nil
       nix-search-cli
       nixd
-      nixfmt-rfc-style
+      nixfmt
       volta
       wget
 
