@@ -28,10 +28,12 @@
       bat
       cachix
       nh
+      nil
       nix-search-cli
+      nixd
       nixfmt-rfc-style
-      wget
       volta
+      wget
 
       # version control
       gh
