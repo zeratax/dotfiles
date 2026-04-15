@@ -4,6 +4,7 @@
     ./minimal.nix
     ../programs/alacritty
     ../programs/gpg
+    ../programs/mangohud
     ../programs/mpv
   ];
 
