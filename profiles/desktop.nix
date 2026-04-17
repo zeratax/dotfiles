@@ -11,6 +11,7 @@
     packages = with pkgs; [
       firefox
       keepassxc
+      wl-clipboard
     ];
   };
 }
