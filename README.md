@@ -29,7 +29,7 @@ Neovim config lives in a [separate repo](https://github.com/zeratax/neovim-confi
 For local neovim config development:
 
 ```sh
-nh home switch --override-input neovim-config path:$HOME/git/neovim-config
+nh home switch -- --override-input neovim-config path:$HOME/git/neovim-config
 ```
 
 ## Structure

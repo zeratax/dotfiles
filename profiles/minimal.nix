@@ -21,7 +21,7 @@
     };
     shellAliases = {
       # nh with local neovim-config override for development
-      nhl = "nh home switch --override-input neovim-config path:$HOME/git/neovim-config";
+      nhl = "nh home switch -- --override-input neovim-config path:$HOME/git/neovim-config";
     };
     packages = with pkgs; [
       # development
