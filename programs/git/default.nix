@@ -5,6 +5,7 @@
     signing = {
       signByDefault = userConfig.gpgSignByDefault;
       key = userConfig.gpgSigningKey;
+      format = "openpgp";
     };
 
     # Large File Storage
