@@ -1,0 +1,16 @@
+{pkgs, ...}: {
+  imports = [
+    ./minimal.nix
+    ../programs/ghostty
+    ../programs/gpg
+    ../programs/niri
+    ../programs/zed
+  ];
+
+  home = {
+    packages = with pkgs; [
+      firefox
+      keepassxc
+    ];
+  };
+}
