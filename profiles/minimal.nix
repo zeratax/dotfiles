@@ -27,6 +27,7 @@
       # development
       alejandra
       bat
+      claude-code
       cachix
       nh
       nil
