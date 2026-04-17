@@ -112,6 +112,12 @@
         modules = [./profiles/gaming.nix];
       };
 
+      "jonaa@surface" = mkHome {
+        system = "x86_64-linux";
+        username = "jonaa";
+        modules = [./profiles/desktop.nix];
+      };
+
       # Minimal profile for any machine
       "minimal" = mkHome {
         system = "x86_64-linux";
