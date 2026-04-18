@@ -48,7 +48,9 @@
     ];
     bashrcExtra = ''
       source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-      source ${./config.bash}
+
+      # prevent file overwrite on stdout redirection, use `>|` to force
+      set -o noclobber
     '';
   };
   programs.readline = {
@@ -57,9 +59,17 @@
       colored-stats = true;
       visible-stats = true;
       completion-ignore-case = true;
+      completion-map-case = true;
       completion-prefix-display-length = 3;
-      # show-all-if-ambiguous = true;
-      # show-all-if-unmodified = true;
+      mark-symlinked-directories = true;
+      show-all-if-ambiguous = true;
     };
+    extraConfig = ''
+      Space: magic-space
+      "\e[A": history-search-backward
+      "\e[B": history-search-forward
+      "\e[C": forward-char
+      "\e[D": backward-char
+    '';
   };
 }
