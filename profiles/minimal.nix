@@ -1,6 +1,7 @@
 {
   pkgs,
   nur,
+  config,
   ...
 }:
 {
@@ -17,11 +18,11 @@
 
   home = {
     sessionVariables = {
-      NH_FLAKE = "$HOME/git/dotfiles";
+      NH_FLAKE = "${config.home.homeDirectory}/git/dotfiles";
     };
     shellAliases = {
       # nh with local neovim-config override for development
-      nhl = "nh home switch -- --override-input neovim-config path:$HOME/git/neovim-config";
+      nhl = "nh home switch -- --override-input neovim-config path:${config.home.homeDirectory}/git/neovim-config";
     };
     packages = with pkgs; [
       # development
