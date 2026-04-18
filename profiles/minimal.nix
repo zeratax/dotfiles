@@ -19,8 +19,6 @@
   home = {
     sessionVariables = {
       NH_FLAKE = "${config.home.homeDirectory}/git/dotfiles";
-      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-      MANROFFOPT = "-c";
     };
     shellAliases = {
       # nh with local neovim-config override for development
@@ -29,7 +27,6 @@
     packages = with pkgs; [
       # development
       alejandra
-      bat
       claude-code
       cachix
       nh
@@ -62,6 +59,7 @@
 
   imports = [
     ../programs/bash
+    ../programs/bat
     ../programs/carapace
     ../programs/direnv
     ../programs/eza
