@@ -4,6 +4,7 @@
     ../programs/ghostty
     ../programs/gpg
     ../programs/niri
+    ../programs/vesktop
     ../programs/zed
   ];
 
