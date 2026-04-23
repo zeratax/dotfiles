@@ -8,8 +8,6 @@
       # General
       gpu-api = "vulkan";
 
-      spirv-compiler = "shaderc";
-
       hwdec = "auto-safe";
       vo = "gpu-next";
 
@@ -33,7 +31,7 @@
 
       # Subs
       demuxer-mkv-subtitle-preroll = true;
-      sub-ass-vsfilter-blur-compat = false;
+      sub-ass-use-video-data = "all";
       sub-fix-timing = false;
       # the following options only apply to subtitles without own styling (i.e. not ASS but e.g. SRT)
       sub-font = "Open Sans Semibold";

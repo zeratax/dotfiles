@@ -2,7 +2,6 @@
   imports = [
     ./desktop.nix
     ../programs/mangohud
-    ../programs/mpv
   ];
 
   home = {
