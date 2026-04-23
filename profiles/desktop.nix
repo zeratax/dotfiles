@@ -14,6 +14,7 @@
       firefox
       keepassxc
       wl-clipboard
+      signal-desktop
     ];
   };
 }
