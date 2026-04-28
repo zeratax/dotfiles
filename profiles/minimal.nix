@@ -19,6 +19,7 @@
   home = {
     sessionVariables = {
       NH_FLAKE = "${config.home.homeDirectory}/git/dotfiles";
+      NH_OS_FLAKE = "${config.home.homeDirectory}/git/nixos-config";
     };
     shellAliases = {
       # nh with local neovim-config override for development
