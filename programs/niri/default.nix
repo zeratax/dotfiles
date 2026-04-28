@@ -16,6 +16,9 @@
         enableClipPreview = true;
         terminalCommand = lib.mkIf config.programs.ghostty.enable "ghostty -e";
       };
+      audio = {
+        preferredPlayer = lib.mkIf config.programs.mpv.enable "mpv";
+      };
       wallpaper = {
         overviewEnabled = true;
       };
