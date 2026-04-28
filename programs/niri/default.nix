@@ -1,4 +1,4 @@
-{noctalia-shell, ...}: {
+{noctalia-shell, config, lib, ...}: {
   imports = [noctalia-shell.homeModules.default];
 
   programs.noctalia-shell = {
@@ -14,6 +14,7 @@
       appLauncher = {
         enableClipboardHistory = true;
         enableClipPreview = true;
+        terminalCommand = lib.mkIf config.programs.ghostty.enable "ghostty -e";
       };
       wallpaper = {
         overviewEnabled = true;
