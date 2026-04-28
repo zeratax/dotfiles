@@ -11,6 +11,9 @@
       colorSchemes = {
         useWallpaperColors = true;
       };
+      wallpaper = {
+        overviewEnabled = true;
+      };
       location = {
         name = "Münster";
       };
@@ -116,9 +119,34 @@
     }
 
     window-rule {
-        match app-id="com.mitchellh.ghostty"
+        geometry-corner-radius 20
+        clip-to-geometry true
         background-effect {
             blur true
+            xray false
+        }
+    }
+
+    debug {
+        honor-xdg-activation-with-invalid-serial
+    }
+
+    layer-rule {
+        match namespace="ghostty-quick-terminal"
+        background-effect {
+            blur true
+            xray false
+        }
+    }
+
+    layer-rule {
+        match namespace="^noctalia-overview*"
+        place-within-backdrop true
+    }
+
+    layer-rule {
+        match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
+        background-effect {
             xray false
         }
     }
