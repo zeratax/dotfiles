@@ -201,6 +201,26 @@
         "type": "github"
       }
     },
+    "nocturnal-shell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774022185,
+        "narHash": "sha256-GAsbrwNCTd+1YgPb/u495eBBY2zh2yfdBhaaLJ2J0Rc=",
+        "owner": "me-osano",
+        "repo": "nocturnal-shell",
+        "rev": "92a1fc89c31a3c6b042e0a78178a0d19bd59060b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "me-osano",
+        "repo": "nocturnal-shell",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -228,6 +248,7 @@
         "neovim-config": "neovim-config",
         "nixos-vscode-server": "nixos-vscode-server",
         "nixpkgs": "nixpkgs_2",
+        "nocturnal-shell": "nocturnal-shell",
         "nur": "nur"
       }
     },

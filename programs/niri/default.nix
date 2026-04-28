@@ -1,4 +1,16 @@
-{...}: {
+{nocturnal-shell, ...}: {
+  imports = [nocturnal-shell.homeModules.default];
+
+  programs.nocturnal-shell = {
+    enable = true;
+    settings = {
+      bar = {
+        position = "top";
+        floating = true;
+        backgroundOpacity = 0.95;
+      };
+    };
+  };
   xdg.configFile."niri/config.kdl".text = ''
     prefer-no-csd
 
@@ -59,7 +71,7 @@
         }
     }
 
-    spawn-at-startup "waybar"
+    spawn-at-startup "nocturnal-shell"
     spawn-at-startup "mako"
 
     hotkey-overlay {
