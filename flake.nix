@@ -30,8 +30,8 @@
       url = "github:dmmulroy/jj-starship";
     };
 
-    nocturnal-shell = {
-      url = "github:me-osano/nocturnal-shell";
+    noctalia-shell = {
+      url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -44,7 +44,7 @@
     mpv-prescalers,
     neovim-config,
     jj-starship,
-    nocturnal-shell,
+    noctalia-shell,
     ...
   }: let
     defaultUserConfig = {
@@ -69,7 +69,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship nocturnal-shell userConfig;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship noctalia-shell userConfig;
         };
         modules =
           [

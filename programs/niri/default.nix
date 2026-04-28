@@ -1,12 +1,11 @@
-{nocturnal-shell, ...}: {
-  imports = [nocturnal-shell.homeModules.default];
+{noctalia-shell, ...}: {
+  imports = [noctalia-shell.homeModules.default];
 
-  programs.nocturnal-shell = {
+  programs.noctalia-shell = {
     enable = true;
     settings = {
       bar = {
         position = "top";
-        floating = true;
         backgroundOpacity = 0.95;
       };
       colorSchemes = {
@@ -29,6 +28,12 @@
   };
   xdg.configFile."niri/config.kdl".text = ''
     prefer-no-csd
+
+    spawn-at-startup "xwayland-satellite"
+
+    environment {
+        QT_QPA_PLATFORMTHEME "qt6ct"
+    }
 
     input {
         keyboard {
@@ -87,8 +92,7 @@
         }
     }
 
-    spawn-at-startup "nocturnal-shell"
-    spawn-at-startup "mako"
+    spawn-at-startup "noctalia-shell"
 
     hotkey-overlay {
     }
@@ -106,6 +110,14 @@
     window-rule {
         match app-id=r#"firefox$"# title="^Picture-in-Picture$"
         open-floating true
+    }
+
+    window-rule {
+        match app-id="com.mitchellh.ghostty"
+        background-effect {
+            blur true
+            xray false
+        }
     }
 
     binds {
@@ -264,5 +276,7 @@
 
         Mod+Shift+P { power-off-monitors; }
     }
+
+    include optional=true "~/.config/niri/noctalia.kdl"
   '';
 }
