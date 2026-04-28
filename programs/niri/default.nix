@@ -11,6 +11,9 @@
       colorSchemes = {
         useWallpaperColors = true;
       };
+      location = {
+        name = "Münster";
+      };
       templates = {
         activeTemplates = [
           { id = "discord"; enabled = true; }
