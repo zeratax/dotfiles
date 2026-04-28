@@ -9,6 +9,22 @@
         floating = true;
         backgroundOpacity = 0.95;
       };
+      colorSchemes = {
+        useWallpaperColors = true;
+      };
+      templates = {
+        activeTemplates = [
+          { id = "discord"; enabled = true; }
+          { id = "zed"; enabled = true; }
+          { id = "btop"; enabled = true; }
+          { id = "ghostty"; enabled = true; }
+          { id = "steam"; enabled = true; }
+          { id = "gtk"; enabled = true; }
+          { id = "qt"; enabled = true; }
+          { id = "pywalfox"; enabled = true; }
+          { id = "niri"; enabled = true; }
+        ];
+      };
     };
   };
   xdg.configFile."niri/config.kdl".text = ''
