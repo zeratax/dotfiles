@@ -11,6 +11,10 @@
       colorSchemes = {
         useWallpaperColors = true;
       };
+      appLauncher = {
+        enableClipboardHistory = true;
+        enableClipPreview = true;
+      };
       wallpaper = {
         overviewEnabled = true;
       };
