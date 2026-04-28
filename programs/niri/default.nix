@@ -60,6 +60,7 @@
     }
 
     spawn-at-startup "waybar"
+    spawn-at-startup "mako"
 
     hotkey-overlay {
     }
