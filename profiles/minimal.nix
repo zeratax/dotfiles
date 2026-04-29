@@ -46,7 +46,6 @@
 
       # productivity
       ## general
-      btop
       fastfetch
       fd
       tealdeer
@@ -61,6 +60,7 @@
   imports = [
     ../programs/bash
     ../programs/bat
+    ../programs/btop
     ../programs/carapace
     ../programs/direnv
     ../programs/eza

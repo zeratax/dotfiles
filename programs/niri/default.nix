@@ -14,10 +14,6 @@
       appLauncher = {
         enableClipboardHistory = true;
         enableClipPreview = true;
-        terminalCommand = lib.mkIf config.programs.ghostty.enable "ghostty -e";
-      };
-      audio = {
-        preferredPlayer = lib.mkIf config.programs.mpv.enable "mpv";
       };
       wallpaper = {
         overviewEnabled = true;
@@ -27,14 +23,8 @@
       };
       templates = {
         activeTemplates = [
-          { id = "discord"; enabled = true; }
-          { id = "zed"; enabled = true; }
-          { id = "btop"; enabled = true; }
-          { id = "ghostty"; enabled = true; }
-          { id = "steam"; enabled = true; }
           { id = "gtk"; enabled = true; }
           { id = "qt"; enabled = true; }
-          { id = "pywalfox"; enabled = true; }
           { id = "niri"; enabled = true; }
         ];
       };

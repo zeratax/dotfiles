@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, config, lib, ...}: {
   programs.zed-editor = {
     enable = true;
     installRemoteServer = true;
@@ -28,4 +27,9 @@
       };
     };
   };
+
+  programs.noctalia-shell.settings.templates.activeTemplates =
+    lib.mkIf config.programs.noctalia-shell.enable [
+      {id = "zed"; enabled = true;}
+    ];
 }

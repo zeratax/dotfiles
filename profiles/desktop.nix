@@ -1,6 +1,7 @@
-{pkgs, lib, ...}: {
+{pkgs, ...}: {
   imports = [
     ./minimal.nix
+    ../programs/firefox
     ../programs/ghostty
     ../programs/gpg
     ../programs/niri
@@ -11,18 +12,9 @@
 
   home = {
     packages = with pkgs; [
-      firefox
       keepassxc
       wl-clipboard
       signal-desktop
     ];
-
-    file.".mozilla/native-messaging-hosts/pywalfox.json".text = builtins.toJSON {
-      name = "pywalfox";
-      description = "Pywalfox native messaging host";
-      path = "${pkgs.pywalfox-native}/bin/pywalfox";
-      type = "stdio";
-      allowed_extensions = ["pywalfox@frewacom.org"];
-    };
   };
 }

@@ -1,4 +1,4 @@
-{mpv-prescalers, ...}: {
+{mpv-prescalers, config, lib, ...}: {
   programs.mpv = {
     enable = true;
 
@@ -197,4 +197,7 @@
   services.jellyfin-mpv-shim = {
     enable = true;
   };
+
+  programs.noctalia-shell.settings.audio.preferredPlayer =
+    lib.mkIf config.programs.noctalia-shell.enable "mpv";
 }
