@@ -1,5 +1,18 @@
-{noctalia-shell, config, lib, ...}: {
-  imports = [noctalia-shell.homeModules.default];
+{
+  noctalia-shell,
+  config,
+  lib,
+  ...
+}:
+let
+  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
+  enablePlugin = {
+    enabled = true;
+    sourceUrl = pluginSource;
+  };
+in
+{
+  imports = [ noctalia-shell.homeModules.default ];
 
   programs.noctalia-shell = {
     enable = true;
@@ -7,6 +20,36 @@
       bar = {
         position = "top";
         backgroundOpacity = 0.95;
+        widgets = {
+          left = [
+            { id = "Launcher"; }
+            { id = "plugin:kde-connect"; }
+            { id = "plugin:osk-toggle"; }
+            { id = "SystemMonitor"; }
+            { id = "plugin:port-monitor"; }
+            { id = "ActiveWindow"; }
+            { id = "MediaMini"; }
+            { id = "plugin:claude-code-panel"; }
+          ];
+          center = [
+            { id = "plugin:screen-toolkit"; }
+            { id = "Workspace"; }
+          ];
+          right = [
+            { id = "Tray"; }
+            { id = "NotificationHistory"; }
+            { id = "Bluetooth"; }
+            { id = "Network"; }
+            { id = "plugin:tailscale"; }
+            { id = "plugin:hassio"; }
+            { id = "Volume"; }
+            { id = "Brightness"; }
+            { id = "Battery"; }
+            { id = "plugin:privacy-indicator"; }
+            { id = "Clock"; }
+            { id = "ControlCenter"; }
+          ];
+        };
       };
       colorSchemes = {
         useWallpaperColors = true;
@@ -23,10 +66,80 @@
       };
       templates = {
         activeTemplates = [
-          { id = "gtk"; enabled = true; }
-          { id = "qt"; enabled = true; }
-          { id = "niri"; enabled = true; }
+          {
+            id = "gtk";
+            enabled = true;
+          }
+          {
+            id = "qt";
+            enabled = true;
+          }
+          {
+            id = "niri";
+            enabled = true;
+          }
         ];
+      };
+    };
+    plugins = {
+      sources = [
+        {
+          enabled = true;
+          name = "Official Noctalia Plugins";
+          url = pluginSource;
+        }
+      ];
+      states = lib.genAttrs [
+        "claude-code-panel"
+        "file-search"
+        "hassio"
+        "kagi-quick-search"
+        "kde-connect"
+        "monitor-layout"
+        "osk-toggle"
+        "polkit-agent"
+        "port-monitor"
+        "privacy-indicator"
+        "screen-toolkit"
+        "ssh-sessions"
+        "tailscale"
+        "unicode-picker"
+        "zed-provider"
+      ] (_: enablePlugin);
+      version = 2;
+    };
+    pluginSettings = {
+      osk-toggle = {
+        backend = "wvkbd";
+        hideWhenUnavailable = false;
+        disableHoverIcon = false;
+        wvkbdBin = "wvkbd-deskintl";
+      };
+      privacy-indicator = {
+        hideInactive = false;
+        enableToast = true;
+        removeMargins = false;
+        iconSpacing = 4;
+        activeColor = "primary";
+        inactiveColor = "none";
+        micFilterRegex = "";
+        camFilterRegex = "wireplumber|pipewire";
+      };
+      tailscale = {
+        refreshInterval = 5000;
+        compactMode = true;
+        showIpAddress = false;
+        showPeerCount = false;
+        hideDisconnected = false;
+        hideMullvadExitNodes = true;
+        terminalCommand = "ghostty";
+        sshUsername = "";
+        pingCount = 5;
+        defaultPeerAction = "copy-ip";
+        taildropEnabled = true;
+        taildropDownloadDir = "~/Downloads";
+        taildropReceiveMode = "operator";
+        loginServer = "";
       };
     };
   };
@@ -127,6 +240,11 @@
             blur true
             xray false
         }
+    }
+
+    switch-events {
+        tablet-mode-on  { spawn "bash" "-c" "pkill -USR2 wvkbd-deskintl"; }
+        tablet-mode-off { spawn "bash" "-c" "pkill -USR1 wvkbd-deskintl"; }
     }
 
     debug {

@@ -29,6 +29,7 @@
       # development
       alejandra
       claude-code
+      claude-code-acp
       cachix
       nh
       nil
@@ -53,7 +54,7 @@
       xclip
 
       ## networking
-      tailscale
+      # tailscale — provided by NixOS services.tailscale
     ];
   };
 

@@ -15,6 +15,19 @@
       keepassxc
       wl-clipboard
       signal-desktop
+
+      # noctalia plugin dependencies
+      (wvkbd.overrideAttrs {
+        makeFlags = ["LAYOUT=deskintl"];
+        meta.mainProgram = "wvkbd-deskintl";
+      })
+      ffmpeg # screen-toolkit recording
+      imagemagick # screen-toolkit
+      satty # screenshot editor
+      sqlite # zed-provider
+      tesseract # screenshot OCR
+      wf-recorder # screen recording
+      zbar # screen-toolkit QR/barcode scanning
     ];
   };
 }
