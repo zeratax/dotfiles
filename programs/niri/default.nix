@@ -56,6 +56,10 @@
 
         trackpoint {
         }
+
+        touch {
+            map-to-output "eDP-1"
+        }
     }
 
     layout {
