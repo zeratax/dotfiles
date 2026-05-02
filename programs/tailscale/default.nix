@@ -1,4 +1,4 @@
-{config, lib, ...}:
+{ config, lib, ... }:
 let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
 in
@@ -15,7 +15,6 @@ lib.mkIf config.programs.noctalia-shell.enable {
       showPeerCount = false;
       hideDisconnected = false;
       hideMullvadExitNodes = true;
-      terminalCommand = "ghostty";
       sshUsername = "";
       pingCount = 5;
       defaultPeerAction = "copy-ip";

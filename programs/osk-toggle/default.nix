@@ -1,8 +1,12 @@
-{pkgs, config, lib, ...}:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in
-lib.mkIf config.programs.noctalia-shell.enable {
+in {
   home.packages = [
     (pkgs.wvkbd.overrideAttrs {
       makeFlags = ["LAYOUT=deskintl"];
@@ -10,7 +14,7 @@ lib.mkIf config.programs.noctalia-shell.enable {
     })
   ];
 
-  programs.noctalia-shell = {
+  programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
     plugins.states.osk-toggle = {
       enabled = true;
       sourceUrl = pluginSource;

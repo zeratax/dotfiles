@@ -13,10 +13,13 @@
     };
   };
 
-  programs.noctalia-shell.settings = lib.mkIf config.programs.noctalia-shell.enable {
-    appLauncher.terminalCommand = "ghostty -e";
-    templates.activeTemplates = [
-      {id = "ghostty"; enabled = true;}
-    ];
+  programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
+    settings = {
+      appLauncher.terminalCommand = "ghostty -e";
+      templates.activeTemplates = [
+        {id = "ghostty"; enabled = true;}
+      ];
+    };
+    pluginSettings.tailscale.terminalCommand = "ghostty";
   };
 }

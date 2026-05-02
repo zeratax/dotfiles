@@ -3,11 +3,10 @@
   jj-starship,
   pkgs,
   ...
-}: {
-  home.packages = [
-    jj-starship.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ];
-
+}:
+let
+  jj-starship-bin = "${jj-starship.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/jj-starship";
+in {
   programs.starship = {
     enable = true;
     settings = {
@@ -53,8 +52,8 @@
       };
 
       custom.jj = {
-        when = "jj-starship detect";
-        shell = ["jj-starship"];
+        when = "${jj-starship-bin} detect";
+        shell = [jj-starship-bin];
         format = "[$symbol](blue bold) $output ";
         symbol = "";
       };

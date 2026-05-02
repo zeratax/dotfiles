@@ -1,7 +1,13 @@
-{config, lib, ...}:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-  enablePlugin = {enabled = true; sourceUrl = pluginSource;};
+  enablePlugin = {
+    enabled = true;
+    sourceUrl = pluginSource;
+  };
 in {
   programs.noctalia-shell = {
     enable = true;
@@ -55,9 +61,18 @@ in {
       };
       templates = {
         activeTemplates = [
-          {id = "gtk"; enabled = true;}
-          {id = "qt"; enabled = true;}
-          {id = "niri"; enabled = true;}
+          {
+            id = "gtk";
+            enabled = true;
+          }
+          {
+            id = "qt";
+            enabled = true;
+          }
+          {
+            id = "niri";
+            enabled = true;
+          }
         ];
       };
       idle = {
