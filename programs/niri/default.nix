@@ -1,5 +1,7 @@
 {
   noctalia-shell,
+  nirinit,
+  pkgs,
   config,
   lib,
   ...
@@ -12,7 +14,9 @@ let
   };
 in
 {
-  imports = [ noctalia-shell.homeModules.default ];
+  imports = [
+    noctalia-shell.homeModules.default
+  ];
 
   programs.noctalia-shell = {
     enable = true;
@@ -143,6 +147,31 @@ in
       };
     };
   };
+
+  xdg.configFile."nirinit/config.toml".source =
+    (pkgs.formats.toml {}).generate "nirinit-config.toml" {
+      skip.apps = [
+        "noctalia-shell"
+        "xwayland-satellite"
+      ];
+    };
+
+  systemd.user.services.nirinit = {
+    Unit = {
+      Description = "Nirinit session manager";
+      After = ["graphical-session.target"];
+      PartOf = ["graphical-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      Restart = "always";
+      ExecStart = "${nirinit.packages.x86_64-linux.nirinit}/bin/nirinit --config %h/.config/nirinit/config.toml";
+    };
+    Install = {
+      WantedBy = ["graphical-session.target"];
+    };
+  };
+
   xdg.configFile."niri/config.kdl".text = ''
     prefer-no-csd
 
