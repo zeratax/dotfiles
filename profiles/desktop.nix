@@ -4,8 +4,11 @@
     ../programs/firefox
     ../programs/ghostty
     ../programs/gpg
-    ../programs/niri
+    ../programs/kde-connect
     ../programs/mpv
+    ../programs/niri
+    ../programs/screen-toolkit
+    ../programs/tailscale
     ../programs/vesktop
     ../programs/zed
   ];
@@ -15,19 +18,6 @@
       keepassxc
       wl-clipboard
       signal-desktop
-
-      # noctalia plugin dependencies
-      (wvkbd.overrideAttrs {
-        makeFlags = ["LAYOUT=deskintl"];
-        meta.mainProgram = "wvkbd-deskintl";
-      })
-      ffmpeg # screen-toolkit recording
-      imagemagick # screen-toolkit
-      satty # screenshot editor
-      sqlite # zed-provider
-      tesseract # screenshot OCR
-      wf-recorder # screen recording
-      zbar # screen-toolkit QR/barcode scanning
     ];
   };
 }

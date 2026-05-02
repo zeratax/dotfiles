@@ -1,6 +1,7 @@
 {
   pkgs,
   nur,
+  noctalia-shell,
   config,
   ...
 }:
@@ -28,8 +29,6 @@
     packages = with pkgs; [
       # development
       alejandra
-      claude-code
-      claude-code-acp
       cachix
       nh
       nil
@@ -52,17 +51,16 @@
       tealdeer
       tree
       xclip
-
-      ## networking
-      # tailscale — provided by NixOS services.tailscale
     ];
   };
 
   imports = [
+    noctalia-shell.homeModules.default
     ../programs/bash
     ../programs/bat
     ../programs/btop
     ../programs/carapace
+    ../programs/claude
     ../programs/direnv
     ../programs/eza
     ../programs/fzf
