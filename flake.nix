@@ -73,6 +73,7 @@
       username,
       modules,
       userConfig ? defaultUserConfig,
+      hostConfig ? {},
     }:
       home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
@@ -80,7 +81,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship noctalia-shell nirinit userConfig;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship noctalia-shell nirinit userConfig hostConfig;
         };
         modules =
           [
@@ -133,6 +134,9 @@
         system = "x86_64-linux";
         username = "jonaa";
         modules = [./profiles/desktop.nix];
+        hostConfig = {
+          lowEndGpu = true;
+        };
       };
 
       # Minimal profile for any machine

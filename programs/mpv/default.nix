@@ -1,8 +1,38 @@
-{mpv-prescalers, config, lib, ...}: {
+{mpv-prescalers, config, lib, hostConfig ? {}, ...}: let
+  lowEndGpu = hostConfig.lowEndGpu or false;
+
+  # Heavy GPU work: RAVU prescaler, ewa_lanczos (jinc) up/down/chroma scaling,
+  # and motion interpolation. Skipped on low-end GPUs that lag at fullscreen.
+  highEndRendering = {
+    glsl-shader = "${mpv-prescalers}/gather/ravu-r4.hook";
+    fbo-format = "rgba16f";
+    # no-scaler-resizes-only = true;
+
+    scale = "ewa_lanczos";
+    dscale = "ewa_lanczos";
+    cscale = "ewa_lanczos";
+
+    blend-subtitles = true;
+    video-sync = "display-resample";
+    interpolation = true;
+    tscale = "box";
+    tscale-window = "sphinx";
+    tscale-radius = 0.95;
+    tscale-clamp = 0.0;
+  };
+
+  lowEndRendering = {
+    scale = "spline36";
+    dscale = "mitchell";
+    cscale = "bilinear";
+
+    interpolation = false;
+  };
+in {
   programs.mpv = {
     enable = true;
 
-    defaultProfiles = ["gpu-hq"];
+    defaultProfiles = lib.optional (!lowEndGpu) "gpu-hq";
 
     config = {
       # General
@@ -65,26 +95,7 @@
       deband-threshold = 50;
       deband-range = 16;
       deband-grain = 0;
-
-      # Grain & Resizer
-      glsl-shader = "${mpv-prescalers}/gather/ravu-r4.hook";
-      fbo-format = "rgba16f";
-      # no-scaler-resizes-only = true;
-
-      # Resizer
-      scale = "ewa_lanczos";
-      dscale = "ewa_lanczos";
-      cscale = "ewa_lanczos";
-
-      # Interpolation
-      blend-subtitles = true;
-      video-sync = "display-resample";
-      interpolation = true;
-      tscale = "box";
-      tscale-window = "sphinx";
-      tscale-radius = 0.95;
-      tscale-clamp = 0.0;
-    };
+    } // (if lowEndGpu then lowEndRendering else highEndRendering);
 
     profiles = {
       WebDL-AoD = {
