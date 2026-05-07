@@ -8,7 +8,16 @@
   home = {
     packages = with pkgs; [
       keepassxc
-      signal-desktop
+      # Electron only auto-detects kwallet when XDG_CURRENT_DESKTOP=KDE; under niri it falls back and errors.
+      (symlinkJoin {
+        name = "signal-desktop";
+        paths = [signal-desktop];
+        nativeBuildInputs = [makeWrapper];
+        postBuild = ''
+          wrapProgram $out/bin/signal-desktop \
+            --add-flags "--password-store=kwallet6"
+        '';
+      })
 
       wl-clipboard
 
