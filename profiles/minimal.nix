@@ -35,7 +35,6 @@
       nix-search-cli
       nixd
       nixfmt
-      volta
       wget
 
       # version control
@@ -74,6 +73,7 @@
     ../programs/vim
     ../programs/yaml2nix.nix
     ../programs/zellij
+    ../programs/volta
     ../programs/zoxide
   ];
 }
