@@ -112,7 +112,7 @@ in {
     };
     pluginSettings = {
       privacy-indicator = {
-        hideInactive = false;
+        hideInactive = true;
         enableToast = true;
         removeMargins = false;
         iconSpacing = 4;
