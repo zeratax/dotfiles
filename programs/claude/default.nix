@@ -1,6 +1,7 @@
 {pkgs, config, lib, ...}: {
   home.packages = with pkgs; [
     claude-code
+    claude-agent-acp
   ];
 
   programs.noctalia-shell.plugins.states.claude-code-panel =
