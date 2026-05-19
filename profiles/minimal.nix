@@ -53,6 +53,11 @@
     ];
   };
 
+  programs.noctalia-shell.package =
+    noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or []) ++ [pkgs.qt6.qtwebsockets];
+    });
+
   imports = [
     noctalia-shell.homeModules.default
     ../programs/bash
