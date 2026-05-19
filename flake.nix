@@ -78,7 +78,7 @@
   }: let
     defaultUserConfig = {
       gitUserName = "ZerataX";
-      gitUserEmail = "mail@zera.tax";
+      gitUserEmail = "contact@zera.tax";
       gpgSigningKey = null;
       gpgSignByDefault = false;
       sshKeyFile = "~/.ssh/id_rsa";
@@ -187,6 +187,9 @@
         system = "x86_64-linux";
         username = "jonaa";
         modules = [./profiles/desktop.nix];
+        userConfig = defaultUserConfig // {
+          sshKeyFile = "~/.ssh/id_ed25519";
+        };
         hostConfig = {
           lowEndGpu = true;
         };
