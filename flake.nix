@@ -140,9 +140,10 @@
       };
 
       # Minimal profile for any machine
-      "minimal" = mkHome {
+      # builtins.getEnv returns "" in pure eval (CI), fall back so the config can still be checked
+      "minimal" = let u = builtins.getEnv "USER"; in mkHome {
         system = "x86_64-linux";
-        username = builtins.getEnv "USER";
+        username = if u != "" then u else "user";
         modules = [./profiles/minimal.nix];
       };
     };
