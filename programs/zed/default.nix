@@ -4,6 +4,9 @@ let
 in {
   programs.zed-editor = {
     enable = true;
+    # On non-NixOS hosts, wrap with nixGL so it can use the system GPU driver
+    # (zed renders through vulkan). Identity (no-op) on NixOS.
+    package = lib.mkIf config.targets.genericLinux.enable (config.lib.nixGL.wrap pkgs.zed-editor);
     installRemoteServer = true;
     extraPackages = with pkgs; [
       nil

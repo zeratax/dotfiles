@@ -1,4 +1,4 @@
-{mpv-prescalers, config, lib, hostConfig ? {}, ...}: let
+{mpv-prescalers, config, lib, pkgs, hostConfig ? {}, ...}: let
   lowEndGpu = hostConfig.lowEndGpu or false;
 
   # Heavy GPU work: RAVU prescaler, ewa_lanczos (jinc) up/down/chroma scaling,
@@ -31,6 +31,10 @@
 in {
   programs.mpv = {
     enable = true;
+
+    # On non-NixOS hosts, wrap with nixGL so it can use the system GPU driver
+    # (mpv renders via vulkan/gpu-next). Identity (no-op) on NixOS.
+    package = lib.mkIf config.targets.genericLinux.enable (config.lib.nixGL.wrap pkgs.mpv);
 
     defaultProfiles = lib.optional (!lowEndGpu) "gpu-hq";
 

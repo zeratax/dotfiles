@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./desktop.nix
     ./gaming.nix
     ../programs/alacritty
     ../programs/vscode
@@ -7,16 +8,6 @@
 
   home = {
     packages = with pkgs; [
-      # games
-      prismlauncher
-      protontricks
-      lutris
-      steam
-      xonotic
-
-      # media
-      transmission-gtk
-
       # productivity
       chromium
       evince
