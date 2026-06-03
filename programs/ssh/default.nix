@@ -5,16 +5,16 @@ in {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "github.com" = {
-        hostname = "github.com";
-        user = userConfig.githubUser;
-        identityFile = userConfig.sshKeyFile;
+        HostName = "github.com";
+        User = userConfig.githubUser;
+        IdentityFile = userConfig.sshKeyFile;
       };
       "dmnd.sh dmnd" = {
-        hostname = "phantom.dmnd.sh";
-        user = "matrix";
-        identityFile = userConfig.sshKeyFile;
+        HostName = "phantom.dmnd.sh";
+        User = "matrix";
+        IdentityFile = userConfig.sshKeyFile;
       };
     };
   };

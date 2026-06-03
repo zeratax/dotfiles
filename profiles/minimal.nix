@@ -64,6 +64,7 @@
     ../programs/eza
     ../programs/fzf
     ../programs/git
+    ../programs/gpg
     ../programs/jujutsu
     ../programs/neovim
     ../programs/nushell

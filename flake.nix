@@ -47,6 +47,19 @@
       url = "github:amaanq/nirinit";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Used on non-NixOS hosts to run Nix graphical apps against the system GPU
+    # driver (see profiles/gaming.nix and the "jonaa@kaine" host below).
+    nixGL = {
+      url = "github:nix-community/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # nixGL calls `nvidia_x11.override { kernel = null; }`, which our
+    # nixpkgs-unstable no longer accepts. Build nixGL against the nixpkgs it was
+    # last tested with instead; it only provides the GPU wrapper, so it doesn't
+    # need to track our package set.
+    nixpkgs-nixgl.url = "github:nixos/nixpkgs/93e8cdce7afc64297cfec447c311470788131cd9";
   };
 
   outputs = {
@@ -59,6 +72,8 @@
     jj-starship,
     noctalia-shell,
     nirinit,
+    nixGL,
+    nixpkgs-nixgl,
     ...
   }: let
     defaultUserConfig = {
@@ -130,7 +145,42 @@
       "jonaa@kaine" = mkHome {
         system = "x86_64-linux";
         username = "jonaa";
-        modules = [./profiles/gaming.nix];
+        modules = [
+          ./profiles/gaming.nix
+          ({pkgs, ...}: {
+            # kaine runs CachyOS, not NixOS: let home-manager configure
+            # graphical apps but use nixGL to run them against the system
+            # NVIDIA driver. Vulkan is enabled because mpv (gpu-api=vulkan) and
+            # zed render through it.
+            targets.genericLinux.enable = true;
+            targets.genericLinux.nixGL = {
+              # nixGL's auto-detection can't parse the current open-kernel-module
+              # version string (nix-community/nixGL#220), so pin nixGL to the
+              # driver explicitly. This MUST match the version that is *running*
+              # when apps launch, i.e. `pacman -Q nvidia-utils` after a reboot
+              # (the userspace libs must match the loaded kernel module). Bump it
+              # whenever CachyOS updates the nvidia package.
+              packages = import "${nixGL}/default.nix" {
+                pkgs = import nixpkgs-nixgl {
+                  inherit (pkgs.stdenv.hostPlatform) system;
+                  config.allowUnfree = true;
+                };
+                nvidiaVersion = "610.43.02";
+                # Pinning the hash keeps evaluation pure: without it nixGL falls
+                # back to `builtins.fetchurl` (no sha256), which fails under the
+                # pure flake eval that `nh home switch` uses. Get it with
+                # `nix-prefetch-url https://download.nvidia.com/XFree86/Linux-x86_64/<ver>/NVIDIA-Linux-x86_64-<ver>.run`
+                # and bump it alongside nvidiaVersion.
+                nvidiaHash = "0qvllxnb20arjhw3bxdz0hw521di9ib75hldzx97gpscpdaa0d1h";
+              };
+              defaultWrapper = "nvidia";
+              vulkan.enable = true;
+            };
+            # The nvidia wrappers require impure evaluation; default it on so
+            # `nh home switch` works without passing `-- --impure` every time.
+            home.sessionVariables.NIX_CONFIG = "pure-eval = false";
+          })
+        ];
       };
 
       "jonaa@surface" = mkHome {
