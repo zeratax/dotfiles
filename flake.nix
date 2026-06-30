@@ -36,7 +36,10 @@
     };
 
     noctalia-shell = {
-      url = "github:noctalia-dev/noctalia-shell";
+      # track v4 maintenance branch — main is v5, a breaking rewrite
+      # (programs.noctalia-shell → programs.noctalia, plugins/pluginSettings removed,
+      # new TOML settings schema). Switch back to main after migrating.
+      url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
