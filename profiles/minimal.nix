@@ -4,8 +4,7 @@
   noctalia-shell,
   config,
   ...
-}:
-{
+}: {
   nixpkgs.config = {
     allowUnfree = true;
   };
@@ -30,6 +29,7 @@
       # development
       alejandra
       cachix
+      codex
       nh
       nil
       nix-search-cli
