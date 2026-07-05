@@ -8,6 +8,7 @@
   home = {
     packages = with pkgs; [
       keepassxc
+      obsidian
       # Electron only auto-detects kwallet when XDG_CURRENT_DESKTOP=KDE; under niri it falls back and errors.
       (symlinkJoin {
         name = "signal-desktop";
