@@ -79,8 +79,8 @@
     defaultUserConfig = {
       gitUserName = "ZerataX";
       gitUserEmail = "mail@zera.tax";
-      gpgSigningKey = "0x8333735E784DF9D4";
-      gpgSignByDefault = true;
+      gpgSigningKey = null;
+      gpgSignByDefault = false;
       sshKeyFile = "~/.ssh/id_rsa";
       githubUser = "ZerataX";
     };
