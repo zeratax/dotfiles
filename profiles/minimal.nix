@@ -30,6 +30,7 @@
       alejandra
       cachix
       codex
+      opencode
       nh
       nil
       nix-search-cli
