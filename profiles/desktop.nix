@@ -4,6 +4,7 @@
     ../programs/firefox
     ../programs/kde-connect
     ../programs/niri
+    ../programs/noctalia
     ../programs/screen-toolkit
     ../programs/tailscale
     ../programs/vesktop

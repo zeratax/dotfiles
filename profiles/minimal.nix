@@ -54,11 +54,10 @@
     ];
   };
 
-  programs.noctalia-shell.package =
-    noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-      buildInputs = (old.buildInputs or []) ++ [pkgs.qt6.qtwebsockets];
-    });
-
+  # The noctalia home module (option namespace) is imported everywhere so that
+  # per-program integrations can reference `programs.noctalia-shell.enable`.
+  # Actually enabling/configuring the shell is opt-in per profile via
+  # ../programs/noctalia (currently only surface, see desktop.nix).
   imports = [
     noctalia-shell.homeModules.default
     ../programs/bash

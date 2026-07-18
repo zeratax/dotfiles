@@ -1,6 +1,5 @@
 {...}: {
   imports = [
-    ../noctalia
     ../osk-toggle
     ../wayland-tools
     ../../services/nirinit
