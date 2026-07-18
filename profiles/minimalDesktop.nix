@@ -7,7 +7,6 @@
     ../programs/ghostty
     ../programs/mpv
     ../programs/zed
-    ../services/storagebox
   ];
   home = {
     packages = with pkgs; [

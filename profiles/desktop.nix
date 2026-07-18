@@ -7,6 +7,7 @@
     ../programs/screen-toolkit
     ../programs/tailscale
     ../programs/vesktop
+    ../services/storagebox
   ];
 
   home = {
