@@ -16,9 +16,12 @@
 
     nur.url = "github:nix-community/NUR";
 
+    systems.url = "github:nix-systems/default-linux";
+
     nixos-vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
     mpv-prescalers = {
