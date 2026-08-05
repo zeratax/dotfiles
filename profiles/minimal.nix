@@ -17,6 +17,7 @@
   programs.home-manager.enable = true;
 
   home = {
+    sessionPath = ["$HOME/.cargo/bin"];
     sessionVariables = {
       NH_FLAKE = "${config.home.homeDirectory}/git/dotfiles";
       NH_OS_FLAKE = "${config.home.homeDirectory}/git/nixos-config";
