@@ -146,6 +146,12 @@
       "jonaa@kaine" = mkHome {
         system = "x86_64-linux";
         username = "jonaa";
+        userConfig =
+          defaultUserConfig
+          // {
+            # GitHub rejects the RSA key; kaine authenticates with ed25519.
+            sshKeyFile = "~/.ssh/id_ed25519";
+          };
         modules = [
           ./profiles/gaming.nix
           ({pkgs, ...}: {
