@@ -57,15 +57,22 @@
 
     # Used on non-NixOS hosts to run Nix graphical apps against the system GPU
     # driver (see profiles/gaming.nix and the "jonaa@kaine" host below).
+    # Patched at eval time — see ./patches/nixgl-*.patch.
     nixGL = {
       url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nixGL calls `nvidia_x11.override { kernel = null; }`, which our
-    # nixpkgs-unstable no longer accepts. Build nixGL against the nixpkgs it was
-    # last tested with instead; it only provides the GPU wrapper, so it doesn't
-    # need to track our package set.
+    # nixGL must be built against this old nixpkgs, not ours. Current nixpkgs'
+    # nvidia-x11 builder deletes the driver's prebuilt EGL platform libraries
+    # (`rm -f $i/lib/libnvidia-egl-*  # built from source`) and stops installing
+    # share/egl/egl_external_platform.d, because NixOS supplies them from
+    # separate source-built packages instead. nixGL doesn't put those back, so a
+    # nixGL built against current nixpkgs has no libnvidia-egl-wayland/-gbm and
+    # every GTK app dies on Wayland with "Failed to create EGL display" — GLX
+    # keeps working, which makes it look like GL is fine. This pin is the last
+    # nixpkgs that still ships them. nixGL only provides the GPU wrapper, so it
+    # doesn't need to track our package set.
     nixpkgs-nixgl.url = "github:nixos/nixpkgs/93e8cdce7afc64297cfec447c311470788131cd9";
   };
 
@@ -161,38 +168,65 @@
           };
         modules = [
           ./profiles/gaming.nix
-          ({pkgs, ...}: {
+          ({
+            pkgs,
+            lib,
+            config,
+            ...
+          }: let
+            nixglPkgs = import nixpkgs-nixgl {
+              inherit (pkgs.stdenv.hostPlatform) system;
+              config.allowUnfree = true;
+            };
+
+            # nixGL's driver auto-detection regex only matches the proprietary
+            # kernel module's version banner ("Kernel Module  610.57.04  "), not
+            # the open module's ("...Open Kernel Module for x86_64  610.57.04  "),
+            # so on kaine it silently fell back to Mesa
+            # (nix-community/nixGL#220). Drop this once the PR lands upstream.
+            #
+            # Note nixGL#222 fixes the same bug but its regex stops matching the
+            # old proprietary banner; #221's handles both.
+            nixGLPatched = nixglPkgs.applyPatches {
+              name = "nixGL-patched";
+              src = nixGL;
+              patches = [./patches/nixgl-pr221-open-module-version.patch];
+            };
+          in {
             # kaine runs CachyOS, not NixOS: let home-manager configure
             # graphical apps but use nixGL to run them against the system
             # NVIDIA driver. Vulkan is enabled because mpv (gpu-api=vulkan) and
             # zed render through it.
             targets.genericLinux.enable = true;
             targets.genericLinux.nixGL = {
-              # nixGL's auto-detection can't parse the current open-kernel-module
-              # version string (nix-community/nixGL#220), so pin nixGL to the
-              # driver explicitly. This MUST match the version that is *running*
-              # when apps launch, i.e. `pacman -Q nvidia-utils` after a reboot
-              # (the userspace libs must match the loaded kernel module). Bump it
-              # whenever CachyOS updates the nvidia package.
-              packages = import "${nixGL}/default.nix" {
-                pkgs = import nixpkgs-nixgl {
-                  inherit (pkgs.stdenv.hostPlatform) system;
-                  config.allowUnfree = true;
-                };
-                nvidiaVersion = "610.43.02";
-                # Pinning the hash keeps evaluation pure: without it nixGL falls
-                # back to `builtins.fetchurl` (no sha256), which fails under the
-                # pure flake eval that `nh home switch` uses. Get it with
-                # `nix-prefetch-url https://download.nvidia.com/XFree86/Linux-x86_64/<ver>/NVIDIA-Linux-x86_64-<ver>.run`
-                # and bump it alongside nvidiaVersion.
-                nvidiaHash = "0qvllxnb20arjhw3bxdz0hw521di9ib75hldzx97gpscpdaa0d1h";
-              };
+              # No nvidiaVersion/nvidiaHash: with both null, nixGL reads the
+              # running driver version out of /proc/driver/nvidia/version on
+              # every evaluation and fetches the matching driver itself. That
+              # keeps the Nix-side GL libraries in lockstep with whatever
+              # nvidia-utils pacman last installed — an `nhs` after a CachyOS
+              # nvidia update is all that's needed, with nothing to bump here.
+              #
+              # home-manager finds the wrappers under `.auto` on its own.
+              packages = import "${nixGLPatched}/default.nix" {pkgs = nixglPkgs;};
               defaultWrapper = "nvidia";
               vulkan.enable = true;
             };
-            # The nvidia wrappers require impure evaluation; default it on so
-            # `nh home switch` works without passing `-- --impure` every time.
-            home.sessionVariables.NIX_CONFIG = "pure-eval = false";
+
+            # Auto-detection is impure by construction (it reads /proc and uses
+            # `builtins.currentTime` to defeat caching), so kaine's config only
+            # ever evaluates with `--impure`. That flag can't be moved into
+            # nix.conf or NIX_CONFIG — nix re-derives `pure-eval` from the
+            # command line after loading the config, so a `pure-eval = false`
+            # there is silently ignored. It has to be on the command line, so
+            # ship a wrapper that always passes it. A script rather than a shell
+            # alias because fish is the login shell here but only nushell is
+            # home-manager-managed, so `home.shellAliases` wouldn't reach fish.
+            home.packages = [
+              (pkgs.writeShellScriptBin "nhs" ''
+                exec ${pkgs.nh}/bin/nh home switch "$@" -- --impure
+              '')
+            ];
+            home.shellAliases.nhl = lib.mkForce "nh home switch -- --impure --override-input neovim-config path:${config.home.homeDirectory}/git/neovim-config";
           })
         ];
       };
@@ -201,9 +235,11 @@
         system = "x86_64-linux";
         username = "jonaa";
         modules = [./profiles/desktop.nix];
-        userConfig = defaultUserConfig // {
-          sshKeyFile = "~/.ssh/id_ed25519";
-        };
+        userConfig =
+          defaultUserConfig
+          // {
+            sshKeyFile = "~/.ssh/id_ed25519";
+          };
         hostConfig = {
           lowEndGpu = true;
         };
@@ -211,11 +247,17 @@
 
       # Minimal profile for any machine
       # builtins.getEnv returns "" in pure eval (CI), fall back so the config can still be checked
-      "minimal" = let u = builtins.getEnv "USER"; in mkHome {
-        system = "x86_64-linux";
-        username = if u != "" then u else "user";
-        modules = [./profiles/minimal.nix];
-      };
+      "minimal" = let
+        u = builtins.getEnv "USER";
+      in
+        mkHome {
+          system = "x86_64-linux";
+          username =
+            if u != ""
+            then u
+            else "user";
+          modules = [./profiles/minimal.nix];
+        };
     };
   };
 }

@@ -1,0 +1,15 @@
+--- a/nixGL.nix
++++ b/nixGL.nix
+@@ -247,8 +247,10 @@
+       # Get if from the nvidiaVersionFile
+         let
+           data = builtins.readFile _nvidiaVersionFile;
+-          versionMatch = builtins.match ".*Module  ([0-9.]+)  .*" data;
+-        in if versionMatch != null then builtins.head versionMatch else null;
++          # Match version after "Module", "x86_64", or "aarch64" with flexible whitespace
++          # This supports both old format (Module  VERSION) and new format (x86_64  VERSION)
++          versionMatch = builtins.match ".*(Module|x86_64|aarch64)  +([0-9.]+)  +.*" data;
++        in if versionMatch != null then builtins.elemAt versionMatch 1 else null;
+ 
+       autoNvidia = nvidiaPackages {version = nvidiaVersionAuto; };
+     in rec {
