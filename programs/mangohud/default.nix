@@ -4,6 +4,8 @@
   ...
 }: let
   settings = {
+    # Start hidden; toggle_hud brings it up.
+    no_display = true;
     fps_limit = 0;
     gpu_stats = true;
     gpu_temp = true;
