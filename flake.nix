@@ -36,6 +36,12 @@
       url = "github:dmmulroy/jj-starship";
     };
 
+    # Scriptable file/hunk-level `jj split` (not in nixpkgs).
+    jj-hunk = {
+      url = "github:laulauland/jj-hunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     noctalia-shell = {
       # track v4 maintenance branch — main is v5, a breaking rewrite
       # (programs.noctalia-shell → programs.noctalia, plugins/pluginSettings removed,
@@ -71,6 +77,7 @@
     mpv-prescalers,
     neovim-config,
     jj-starship,
+    jj-hunk,
     noctalia-shell,
     nirinit,
     nixGL,
@@ -100,7 +107,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship noctalia-shell nirinit userConfig hostConfig;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit userConfig hostConfig;
         };
         modules =
           [

@@ -1,0 +1,25 @@
+name: Determinate CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - nixos
+    tags:
+      - v?[0-9]+.[0-9]+.[0-9]+*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  DeterminateCI:
+    # Discovers every flake output via flake schemas, builds them on the
+    # matching runners, and pushes the results to FlakeHub Cache (GitHub OIDC
+    # auth — no secrets needed). Cache-only: `visibility` is omitted, so the
+    # flake itself is not published to FlakeHub.
+    uses: DeterminateSystems/ci/.github/workflows/workflow.yml@main
+    permissions:
+      id-token: write
+      contents: read

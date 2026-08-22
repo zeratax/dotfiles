@@ -2,6 +2,7 @@
   pkgs,
   nur,
   noctalia-shell,
+  jj-hunk,
   config,
   ...
 }: {
@@ -30,6 +31,7 @@
       # development
       alejandra
       cachix
+      fh # FlakeHub CLI
       codex
       opencode
       nh
@@ -41,6 +43,7 @@
 
       # version control
       gh
+      jj-hunk.packages.${pkgs.stdenv.hostPlatform.system}.default # scriptable jj split
 
       jq
       ripgrep

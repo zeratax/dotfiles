@@ -117,6 +117,26 @@
         "type": "github"
       }
     },
+    "jj-hunk": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779016322,
+        "narHash": "sha256-lFuYTg6TW/Lsz4wwaaWFi37F2aGKpLwQgq40VTdDUKE=",
+        "owner": "laulauland",
+        "repo": "jj-hunk",
+        "rev": "3643ee8f7fa02f0ea4befd060e0e1057df72b987",
+        "type": "github"
+      },
+      "original": {
+        "owner": "laulauland",
+        "repo": "jj-hunk",
+        "type": "github"
+      }
+    },
     "jj-starship": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -378,6 +398,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "jj-hunk": "jj-hunk",
         "jj-starship": "jj-starship",
         "mpv-prescalers": "mpv-prescalers",
         "neovim-config": "neovim-config",
