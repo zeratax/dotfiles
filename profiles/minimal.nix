@@ -20,12 +20,12 @@
   home = {
     sessionPath = ["$HOME/.cargo/bin"];
     sessionVariables = {
-      NH_FLAKE = "${config.home.homeDirectory}/git/dotfiles";
-      NH_OS_FLAKE = "${config.home.homeDirectory}/git/nixos-config";
+      NH_FLAKE = "${config.home.homeDirectory}/Projects/dotfiles";
+      NH_OS_FLAKE = "${config.home.homeDirectory}/Projects/nixos-config";
     };
     shellAliases = {
       # nh with local neovim-config override for development
-      nhl = "nh home switch -- --override-input neovim-config path:${config.home.homeDirectory}/git/neovim-config";
+      nhl = "nh home switch -- --override-input neovim-config path:${config.home.homeDirectory}/Projects/neovim-config";
     };
     packages = with pkgs; [
       # development
