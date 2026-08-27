@@ -11,7 +11,7 @@ Personal dotfiles managed with [Home Manager](https://github.com/nix-community/h
 ## Setup
 
 ```sh
-git clone git@github.com:ZerataX/dotfiles.git ~/git/dotfiles
+git clone git@github.com:ZerataX/dotfiles.git ~/Projects/dotfiles
 ```
 
 Machine configs are defined in `flake.nix` as `homeConfigurations`. Apply with:
@@ -29,7 +29,7 @@ Neovim config lives in a [separate repo](https://github.com/zeratax/neovim-confi
 For local neovim config development:
 
 ```sh
-nh home switch -- --override-input neovim-config path:$HOME/git/neovim-config
+nh home switch -- --override-input neovim-config path:$HOME/Projects/neovim-config
 ```
 
 ## Structure
