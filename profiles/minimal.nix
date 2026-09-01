@@ -69,7 +69,9 @@
     ../programs/btop
     ../programs/carapace
     ../programs/claude
+    ../programs/delta
     ../programs/direnv
+    ../programs/difft
     ../programs/eza
     ../programs/fzf
     ../programs/git
