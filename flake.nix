@@ -192,6 +192,18 @@
               src = nixGL;
               patches = [./patches/nixgl-pr221-open-module-version.patch];
             };
+
+            # Pure evaluation cannot inspect the host driver, so use a
+            # deterministic driver artifact there. Impure evaluations leave
+            # both values unset and let nixGL detect the running driver.
+            nixGLPackageArgs =
+              {
+                pkgs = nixglPkgs;
+              }
+              // lib.optionalAttrs (!(builtins ? currentTime)) {
+                nvidiaVersion = "610.43.02";
+                nvidiaHash = "0qvllxnb20arjhw3bxdz0hw521di9ib75hldzx97gpscpdaa0d1h";
+              };
           in {
             # kaine runs CachyOS, not NixOS: let home-manager configure
             # graphical apps but use nixGL to run them against the system
@@ -199,15 +211,11 @@
             # zed render through it.
             targets.genericLinux.enable = true;
             targets.genericLinux.nixGL = {
-              # No nvidiaVersion/nvidiaHash: with both null, nixGL reads the
-              # running driver version out of /proc/driver/nvidia/version on
-              # every evaluation and fetches the matching driver itself. That
-              # keeps the Nix-side GL libraries in lockstep with whatever
-              # nvidia-utils pacman last installed — an `nhs` after a CachyOS
-              # nvidia update is all that's needed, with nothing to bump here.
+              # With --impure, nixGL reads the running driver version from
+              # /proc/driver/nvidia/version and fetches the matching driver.
               #
               # home-manager finds the wrappers under `.auto` on its own.
-              packages = import "${nixGLPatched}/default.nix" {pkgs = nixglPkgs;};
+              packages = import "${nixGLPatched}/default.nix" nixGLPackageArgs;
               defaultWrapper = "nvidia";
               vulkan.enable = true;
             };
