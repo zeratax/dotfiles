@@ -89,8 +89,12 @@
     nirinit,
     nixGL,
     nixpkgs-nixgl,
+    systems,
     ...
   }: let
+    supportedSystems = import systems;
+    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
     defaultUserConfig = {
       gitUserName = "ZerataX";
       gitUserEmail = "contact@zera.tax";
@@ -127,6 +131,8 @@
           ++ modules;
       };
   in {
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
     homeConfigurations = {
       # WSL work machines
       "jabdinghoff@LT-JABDINGHOFF" = mkHome {
