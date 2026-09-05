@@ -2,8 +2,14 @@
   description = "Home Manager configuration";
 
   nixConfig = {
-    extra-substituters = ["https://noctalia.cachix.org"];
-    extra-trusted-public-keys = ["noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="];
+    extra-substituters = [
+      "https://noctalia.cachix.org"
+      "https://cache.numtide.com"
+    ];
+    extra-trusted-public-keys = [
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
   };
 
   inputs = {
@@ -55,6 +61,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Nix packaging for LLM agent tooling (claude-desktop & friends). Deliberately
+    # no `nixpkgs.follows`: it pins its own nixpkgs for the bun2nix-based FODs, and
+    # overriding that invalidates their recorded hashes.
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+    };
+
     # Used on non-NixOS hosts to run Nix graphical apps against the system GPU
     # driver (see profiles/gaming.nix and the "jonaa@kaine" host below).
     # Patched at eval time — see ./patches/nixgl-*.patch.
@@ -87,6 +100,7 @@
     jj-hunk,
     noctalia-shell,
     nirinit,
+    llm-agents,
     nixGL,
     nixpkgs-nixgl,
     systems,
@@ -118,7 +132,7 @@
           config.allowUnfree = true;
         };
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit userConfig hostConfig;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit llm-agents userConfig hostConfig;
         };
         modules =
           [

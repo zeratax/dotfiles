@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  llm-agents,
+  ...
+}: {
   # opencode-desktop currently bundles electron-40, which nixpkgs marks EOL/insecure.
   nixpkgs.config.permittedInsecurePackages = ["electron-40.10.5"];
 
@@ -13,6 +17,7 @@
       keepassxc
       obsidian
       opencode-desktop
+      llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
       # Electron only auto-detects kwallet when XDG_CURRENT_DESKTOP=KDE; under niri it falls back and errors.
       (symlinkJoin {
         name = "signal-desktop";
