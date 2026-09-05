@@ -25,7 +25,12 @@
     ${builtins.readFile ./config.kdl}
   '';
 in {
-  home.packages = [pkgs.claude-code];
+  # claude-code deliberately NOT installed here: ../claude owns it, and both modules come
+  # from profiles/minimal.nix, so listing it in two places put two different claude-code
+  # derivations into one buildEnv. That is a hard failure, not a silent override --
+  # "two given paths contain a conflicting subpath: .../claude-code-2.1.261/bin/.claude-wrapped
+  # and .../claude-code-2.1.245/bin/.claude-wrapped" (2026-09-05, when ../claude moved to
+  # llm-agents.nix). One package, one owner.
 
   xdg.configFile."zellij/config.kdl".source = configFile;
   xdg.configFile."zellij/layouts/default.kdl".source = ./default-layout.kdl;
