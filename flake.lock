@@ -179,11 +179,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779016322,
-        "narHash": "sha256-lFuYTg6TW/Lsz4wwaaWFi37F2aGKpLwQgq40VTdDUKE=",
+        "lastModified": 1789415224,
+        "narHash": "sha256-oUlr2nTMZIMKII3cErRd3dGwHvyDBsjunxymun20i+Y=",
         "owner": "laulauland",
         "repo": "jj-hunk",
-        "rev": "3643ee8f7fa02f0ea4befd060e0e1057df72b987",
+        "rev": "4c1724a6fae72b9823b200ef2c2fab27b56ede8f",
         "type": "github"
       },
       "original": {
