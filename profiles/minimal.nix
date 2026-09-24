@@ -4,6 +4,7 @@
   noctalia-shell,
   jj-hunk,
   config,
+  llm-agents,
   ...
 }: {
   nixpkgs.config = {
@@ -29,16 +30,16 @@
     };
     packages = with pkgs; [
       # development
+      llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
       alejandra
       cachix
       fh # FlakeHub CLI
-      codex
-      opencode
       nh
       nil
       nix-search-cli
       nixd
       nixfmt
+      opencode
       wget
 
       # version control
