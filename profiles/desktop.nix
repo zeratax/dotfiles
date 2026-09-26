@@ -8,6 +8,7 @@
     ../programs/screen-toolkit
     ../programs/tailscale
     ../programs/vesktop
+    ../services/plasma-placeholder-fix
     ../services/storagebox
   ];
 
