@@ -137,11 +137,16 @@
         definition = "reachable(to, mutable())";
         doc = "Full tree (all stacks) containing to";
       };
+      "revset-aliases"."local_only()" = {
+        definition = ''mutable() & (description(regex:"^LOCAL ONLY:") | bookmarks(regex:"^(local|wip)/") | (empty() & ~merges()))'';
+        doc = "Commits that must never be pushed";
+      };
       "revset-aliases"."closest_pushable(to)" = {
-        definition = ''heads(::to & mutable() & ~empty() & description(regex:".+"))'';
-        doc = "Closest mutable, non-empty, described commits at or behind to";
+        definition = ''heads(::to & mutable() & ~empty() & description(regex:".+") & ~(local_only()::))'';
+        doc = "Closest mutable, non-empty, described commits at or behind to, without a local-only ancestor";
       };
       revsets."bookmark-advance-to" = "closest_pushable(@)";
+      git.private-commits = "local_only()";
     };
   };
 }
