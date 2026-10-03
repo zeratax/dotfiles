@@ -16,8 +16,8 @@
     packages = with pkgs; [
       keepassxc
       obsidian
-      opencode-desktop
       llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
+      llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2-desktop
       # Electron only auto-detects kwallet when XDG_CURRENT_DESKTOP=KDE; under niri it falls back and errors.
       (symlinkJoin {
         name = "signal-desktop";

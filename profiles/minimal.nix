@@ -39,7 +39,7 @@
       nix-search-cli
       nixd
       nixfmt
-      opencode
+      llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2
       wget
 
       # version control
