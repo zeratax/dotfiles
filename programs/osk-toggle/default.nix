@@ -7,10 +7,10 @@
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
 in {
   home.packages = [
-    (pkgs.wvkbd.overrideAttrs {
+    (pkgs.wvkbd.overrideAttrs (old: {
       makeFlags = ["LAYOUT=deskintl"];
-      meta.mainProgram = "wvkbd-deskintl";
-    })
+      meta = old.meta // {mainProgram = "wvkbd-deskintl";};
+    }))
   ];
 
   programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
