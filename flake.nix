@@ -139,10 +139,9 @@
       hostConfig ? {},
     }:
       home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+        # home-manager re-imports nixpkgs with the modules' nixpkgs.* options, so
+        # config set here would be dropped; unfree is allowed in profiles/minimal.nix.
+        pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = {
           inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit llm-agents userConfig hostConfig;
         };
