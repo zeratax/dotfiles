@@ -3,9 +3,6 @@
   llm-agents,
   ...
 }: {
-  # opencode-desktop currently bundles electron-40, which nixpkgs marks EOL/insecure.
-  nixpkgs.config.permittedInsecurePackages = ["electron-40.10.5"];
-
   imports = [
     ./minimal.nix
     ../programs/ghostty
