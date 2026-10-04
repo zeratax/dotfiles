@@ -3,8 +3,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
 in {
   home.packages = with pkgs; [
@@ -16,9 +15,8 @@ in {
     zbar
   ];
 
-  programs.noctalia-shell.plugins.states.screen-toolkit =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+  programs.noctalia-shell.plugins.states.screen-toolkit = lib.mkIf config.programs.noctalia-shell.enable {
+    enabled = true;
+    sourceUrl = pluginSource;
+  };
 }

@@ -1,4 +1,9 @@
-{pkgs, config, lib, ...}: {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   programs.firefox = {
     enable = true;
     configPath = ".mozilla/firefox";
@@ -15,8 +20,10 @@
     };
   };
 
-  programs.noctalia-shell.settings.templates.activeTemplates =
-    lib.mkIf config.programs.noctalia-shell.enable [
-      {id = "pywalfox"; enabled = true;}
-    ];
+  programs.noctalia-shell.settings.templates.activeTemplates = lib.mkIf config.programs.noctalia-shell.enable [
+    {
+      id = "pywalfox";
+      enabled = true;
+    }
+  ];
 }

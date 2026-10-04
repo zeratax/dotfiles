@@ -1,5 +1,9 @@
-{pkgs, config, lib, ...}:
-let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
 in {
   programs.zed-editor = {
@@ -38,7 +42,10 @@ in {
 
   programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
     settings.templates.activeTemplates = [
-      {id = "zed"; enabled = true;}
+      {
+        id = "zed";
+        enabled = true;
+      }
     ];
     plugins.states.zed-provider = {
       enabled = true;

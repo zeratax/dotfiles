@@ -23,9 +23,8 @@ in {
     agents.claude-agent-acp
   ];
 
-  programs.noctalia-shell.plugins.states.claude-code-panel =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-    };
+  programs.noctalia-shell.plugins.states.claude-code-panel = lib.mkIf config.programs.noctalia-shell.enable {
+    enabled = true;
+    sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+  };
 }

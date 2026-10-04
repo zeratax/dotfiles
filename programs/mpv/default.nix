@@ -1,4 +1,11 @@
-{mpv-prescalers, config, lib, pkgs, hostConfig ? {}, ...}: let
+{
+  mpv-prescalers,
+  config,
+  lib,
+  pkgs,
+  hostConfig ? {},
+  ...
+}: let
   lowEndGpu = hostConfig.lowEndGpu or false;
 
   # Heavy GPU work: RAVU prescaler, ewa_lanczos (jinc) up/down/chroma scaling,
@@ -38,68 +45,74 @@ in {
 
     defaultProfiles = lib.optional (!lowEndGpu) "gpu-hq";
 
-    config = {
-      # General
-      gpu-api = "vulkan";
+    config =
+      {
+        # General
+        gpu-api = "vulkan";
 
-      hwdec = "auto-safe";
-      vo = "gpu-next";
+        hwdec = "auto-safe";
+        vo = "gpu-next";
 
-      # Cache
-      # Uses a large seekable RAM cache even for local input.
-      cache = true;
-      # cache-secs=300
-      # Uses extra large RAM cache (needs cache=yes to make it useful).
-      demuxer-max-bytes = "800M";
-      demuxer-max-back-bytes = "200M";
+        # Cache
+        # Uses a large seekable RAM cache even for local input.
+        cache = true;
+        # cache-secs=300
+        # Uses extra large RAM cache (needs cache=yes to make it useful).
+        demuxer-max-bytes = "800M";
+        demuxer-max-back-bytes = "200M";
 
-      # Tweaks
-      cursor-autohide = 100;
-      force-window = "immediate";
-      keep-open = true;
-      # fs = true; # crashes???
+        # Tweaks
+        cursor-autohide = 100;
+        force-window = "immediate";
+        keep-open = true;
+        # fs = true; # crashes???
 
-      #Priority
-      slang = "gem,ger,gmh,de,deu,en,eng";
-      alang = "ja,jpn,de,deu,ger,en,eng";
+        #Priority
+        slang = "gem,ger,gmh,de,deu,en,eng";
+        alang = "ja,jpn,de,deu,ger,en,eng";
 
-      # Subs
-      demuxer-mkv-subtitle-preroll = true;
-      sub-ass-use-video-data = "all";
-      sub-fix-timing = false;
-      # the following options only apply to subtitles without own styling (i.e. not ASS but e.g. SRT)
-      sub-font = "Open Sans Semibold";
-      sub-font-size = 48;
-      sub-color = "#FFFFFFFF";
-      sub-border-color = "#FF262626";
-      sub-border-size = 3.2;
-      sub-shadow-offset = 1;
-      sub-shadow-color = "#33000000";
-      sub-spacing = 0.5;
+        # Subs
+        demuxer-mkv-subtitle-preroll = true;
+        sub-ass-use-video-data = "all";
+        sub-fix-timing = false;
+        # the following options only apply to subtitles without own styling (i.e. not ASS but e.g. SRT)
+        sub-font = "Open Sans Semibold";
+        sub-font-size = 48;
+        sub-color = "#FFFFFFFF";
+        sub-border-color = "#FF262626";
+        sub-border-size = 3.2;
+        sub-shadow-offset = 1;
+        sub-shadow-color = "#33000000";
+        sub-spacing = 0.5;
 
-      # Volume
-      volume = 100;
-      volume-max = 200;
+        # Volume
+        volume = 100;
+        volume-max = 200;
 
-      # Screenshot
-      screenshot-format = "png";
-      screenshot-high-bit-depth = true;
-      screenshot-png-compression = 1;
-      screenshot-jpeg-quality = 95;
-      screenshot-directory = "~/sync/mpv/Screenshots";
-      screenshot-template = "%f-%wH.%wM.%wS.%wT-#%#00n";
+        # Screenshot
+        screenshot-format = "png";
+        screenshot-high-bit-depth = true;
+        screenshot-png-compression = 1;
+        screenshot-jpeg-quality = 95;
+        screenshot-directory = "~/sync/mpv/Screenshots";
+        screenshot-template = "%f-%wH.%wM.%wS.%wT-#%#00n";
 
-      # Dither
-      dither-depth = "auto";
-      dither = "fruit";
+        # Dither
+        dither-depth = "auto";
+        dither = "fruit";
 
-      # Deband
-      deband = false;
-      deband-iterations = 4;
-      deband-threshold = 50;
-      deband-range = 16;
-      deband-grain = 0;
-    } // (if lowEndGpu then lowEndRendering else highEndRendering);
+        # Deband
+        deband = false;
+        deband-iterations = 4;
+        deband-threshold = 50;
+        deband-range = 16;
+        deband-grain = 0;
+      }
+      // (
+        if lowEndGpu
+        then lowEndRendering
+        else highEndRendering
+      );
 
     profiles = {
       WebDL-AoD = {

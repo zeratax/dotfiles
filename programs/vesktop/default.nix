@@ -30,8 +30,10 @@
     }))
   ];
 
-  programs.noctalia-shell.settings.templates.activeTemplates =
-    lib.mkIf config.programs.noctalia-shell.enable [
-      {id = "discord"; enabled = true;}
-    ];
+  programs.noctalia-shell.settings.templates.activeTemplates = lib.mkIf config.programs.noctalia-shell.enable [
+    {
+      id = "discord";
+      enabled = true;
+    }
+  ];
 }

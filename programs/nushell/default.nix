@@ -13,27 +13,29 @@
         let
           nuPaths = map (p: builtins.replaceStrings ["$HOME"] ["($env.HOME)"] p) config.home.sessionPath;
         in
-        if nuPaths == [] then ""
-        else ''
-          $env.PATH = ($env.PATH | split row (char esep) | prepend [
-            ${builtins.concatStringsSep "\n    " (map (p: "$\"${p}\"") nuPaths)}
-          ] | str join (char esep))
-        ''
+          if nuPaths == []
+          then ""
+          else ''
+            $env.PATH = ($env.PATH | split row (char esep) | prepend [
+              ${builtins.concatStringsSep "\n    " (map (p: "$\"${p}\"") nuPaths)}
+            ] | str join (char esep))
+          ''
       }
 
       # Session variables from home.sessionVariables (mirrors hm-session-vars.sh)
       ${builtins.concatStringsSep "\n" (
-        builtins.attrValues (builtins.mapAttrs
-          (name: value:
-            let
+        builtins.attrValues (
+          builtins.mapAttrs
+          (
+            name: value: let
               strVal = toString value;
               # Replace $HOME with nushell equivalent
               nuVal = builtins.replaceStrings ["$HOME"] ["($env.HOME)"] strVal;
             in
-            # Skip values with remaining shell expressions
-            if builtins.match ".*\\$\\{.*" nuVal != null
-            then "# ${name} skipped: contains shell expression"
-            else "$env.${name} = $\"${nuVal}\""
+              # Skip values with remaining shell expressions
+              if builtins.match ".*\\$\\{.*" nuVal != null
+              then "# ${name} skipped: contains shell expression"
+              else "$env.${name} = $\"${nuVal}\""
           )
           config.home.sessionVariables
         )

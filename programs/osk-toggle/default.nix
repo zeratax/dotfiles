@@ -3,8 +3,7 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
 in {
   home.packages = [
