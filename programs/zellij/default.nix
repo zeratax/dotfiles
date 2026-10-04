@@ -45,8 +45,6 @@ in {
     };
   };
 
-  home.sessionVariables = {ZELLIJ_AUTO_ATTACH = "true";};
-
   programs.zellij = {
     enable = true;
     enableBashIntegration =
