@@ -40,6 +40,7 @@
 
     jj-starship = {
       url = "github:dmmulroy/jj-starship";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Scriptable file/hunk-level `jj split` (not in nixpkgs).
