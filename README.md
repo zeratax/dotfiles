@@ -21,7 +21,6 @@ Machine configs are defined in `flake.nix` as `homeConfigurations`:
 - `desktop` — `minimalDesktop` + the niri/noctalia desktop, Firefox, Vesktop, …
 - `gaming` — `minimalDesktop` + MangoHud and protontricks
 - `wsl` — `minimal` + VS Code server
-- `full` — `desktop` + `gaming` + extra GUI apps (not assigned to any host)
 
 ## Setup
 
