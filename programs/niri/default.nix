@@ -8,7 +8,8 @@
   xdg.configFile."niri/config.kdl".text = ''
     prefer-no-csd
 
-    spawn-at-startup "xwayland-satellite"
+    // No spawn-at-startup for xwayland-satellite: since 25.08 niri starts it
+    // on demand, and a manual instance gets in the way of that.
 
     environment {
         QT_QPA_PLATFORMTHEME "qt6ct"
@@ -16,20 +17,12 @@
 
     input {
         keyboard {
-            xkb {
-            }
             numlock
         }
 
         touchpad {
             tap
             natural-scroll
-        }
-
-        mouse {
-        }
-
-        trackpoint {
         }
 
         touch {
@@ -70,25 +63,11 @@
             offset x=0 y=5
             color "#0007"
         }
-
-        struts {
-        }
     }
 
     spawn-at-startup "noctalia-shell"
 
-    hotkey-overlay {
-    }
-
     screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
-
-    animations {
-    }
-
-    window-rule {
-        match app-id=r#"^org\.wezfurlong\.wezterm$"#
-        default-column-width {}
-    }
 
     window-rule {
         match app-id=r#"firefox$"# title="^Picture-in-Picture$"
