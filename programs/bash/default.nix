@@ -8,13 +8,12 @@
       # record each line as it gets issued
       PROMPT_COMMAND = "history -a";
       # use standard iso 8601 timestamp
-      # %f equivalent to %y-%m-%d
-      # %t equivalent to %h:%m:%s (24-hours format)
-      HISTTIMEFORMAT = "%f %t ";
-      # this defines where cd looks for targets
-      # add the directories you want to have fast access to, separated by colon
-      # ex: cdpath=".:~:~/projects" will look for targets in the current working directory, in home and in the ~/projects folder
-      CDPATH = ".";
+      # %F equivalent to %Y-%m-%d
+      # %T equivalent to %H:%M:%S (24-hours format)
+      HISTTIMEFORMAT = "%F %T ";
+      # No CDPATH here: these variables are exported from ~/.profile, and an
+      # exported CDPATH makes `cd` print the new directory, which breaks
+      # `$(cd dir && pwd)` in every script started from the session.
     };
     shellOptions = [
       # update window size after every command
