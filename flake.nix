@@ -90,6 +90,7 @@
   };
 
   outputs = {
+    self,
     nixpkgs,
     home-manager,
     nur,
@@ -155,6 +156,15 @@
       };
   in {
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
+    # Built by CI (DeterminateCI builds every check), so unformatted code fails
+    # the PR instead of piling up until the next `nix fmt`.
+    checks = forAllSystems (system: {
+      formatting = nixpkgs.legacyPackages.${system}.runCommand "check-formatting" {} ''
+        ${nixpkgs.lib.getExe self.formatter.${system}} --check ${self}
+        touch $out
+      '';
+    });
 
     homeConfigurations = {
       # WSL work machines

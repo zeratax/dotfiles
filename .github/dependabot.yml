@@ -4,6 +4,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # one PR per week for all flake inputs instead of one per input
+    groups:
+      flake-inputs:
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
