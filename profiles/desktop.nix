@@ -16,6 +16,8 @@
     packages = with pkgs; [
       # streaming/recording
       obs-studio
+      # game streaming client (host: kaine, moonshine)
+      moonlight-qt
     ];
   };
 }
