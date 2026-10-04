@@ -118,6 +118,15 @@
       githubUser = "ZerataX";
     };
 
+    workUserConfig = {
+      gitUserName = "Jona Abdinghoff";
+      gitUserEmail = "jabdinghoff@lancier-monitoring.de";
+      gpgSigningKey = null;
+      gpgSignByDefault = false;
+      sshKeyFile = "~/.ssh/id_ed25519";
+      githubUser = "jabdinghoff";
+    };
+
     # Helper function to create a home configuration
     mkHome = {
       system,
@@ -153,28 +162,14 @@
         system = "x86_64-linux";
         username = "jabdinghoff";
         modules = [./profiles/wsl.nix];
-        userConfig = {
-          gitUserName = "Jona Abdinghoff";
-          gitUserEmail = "jabdinghoff@lancier-monitoring.de";
-          gpgSigningKey = null;
-          gpgSignByDefault = false;
-          sshKeyFile = "~/.ssh/id_ed25519";
-          githubUser = "jabdinghoff";
-        };
+        userConfig = workUserConfig;
       };
 
       "jabdinghoff@sf-jabdinghoff" = mkHome {
         system = "aarch64-linux";
         username = "jabdinghoff";
         modules = [./profiles/wsl.nix];
-        userConfig = {
-          gitUserName = "Jona Abdinghoff";
-          gitUserEmail = "jabdinghoff@lancier-monitoring.de";
-          gpgSigningKey = null;
-          gpgSignByDefault = false;
-          sshKeyFile = "~/.ssh/id_ed25519";
-          githubUser = "jabdinghoff";
-        };
+        userConfig = workUserConfig;
       };
 
       "jonaa@kaine" = mkHome {
