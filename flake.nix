@@ -116,7 +116,7 @@
       gpgSigningKey = null;
       gpgSignByDefault = false;
       gpgSshSupport = false;
-      sshKeyFile = "~/.ssh/id_rsa";
+      sshKeyFile = "~/.ssh/id_ed25519";
       githubUser = "ZerataX";
     };
 
@@ -186,12 +186,6 @@
       "jonaa@kaine" = mkHome {
         system = "x86_64-linux";
         username = "jonaa";
-        userConfig =
-          defaultUserConfig
-          // {
-            # GitHub rejects the RSA key; kaine authenticates with ed25519.
-            sshKeyFile = "~/.ssh/id_ed25519";
-          };
         modules = [
           ./profiles/gaming.nix
           ./services/moonshine-mic
@@ -312,11 +306,6 @@
         system = "x86_64-linux";
         username = "jonaa";
         modules = [./profiles/desktop.nix ./programs/keepassxc/beta.nix];
-        userConfig =
-          defaultUserConfig
-          // {
-            sshKeyFile = "~/.ssh/id_ed25519";
-          };
         hostConfig = {
           lowEndGpu = true;
         };
