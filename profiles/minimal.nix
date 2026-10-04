@@ -74,6 +74,7 @@
     ../programs/direnv
     ../programs/difft
     ../programs/eza
+    ../programs/fnm
     ../programs/fzf
     ../programs/git
     ../programs/gpg
@@ -86,7 +87,6 @@
     ../programs/vim
     ../programs/yaml2nix.nix
     ../programs/zellij
-    ../programs/volta
     ../programs/zoxide
   ];
 }
