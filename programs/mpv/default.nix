@@ -8,6 +8,33 @@
 }: let
   lowEndGpu = hostConfig.lowEndGpu or false;
 
+  # Pillow (tile captions) looks fonts up by file name under
+  # $XDG_DATA_DIRS/fonts, which on NixOS holds none of them, so the shim
+  # fell back to Pillow's fixed 11px bitmap font. Names match its lookup
+  # table in mpvtk/pilfont.py.
+  shimFonts = pkgs.linkFarm "jellyfin-mpv-shim-fonts" {
+    "share/fonts/DejaVuSans.ttf" = "${pkgs.dejavu_fonts}/share/fonts/truetype/DejaVuSans.ttf";
+    "share/fonts/DejaVuSans-Bold.ttf" = "${pkgs.dejavu_fonts}/share/fonts/truetype/DejaVuSans-Bold.ttf";
+    "share/fonts/NotoSansCJK-Regular.ttc" = "${pkgs.noto-fonts-cjk-sans}/share/fonts/opentype/noto-cjk/NotoSansCJK-VF.otf.ttc";
+    "share/fonts/NotoColorEmoji.ttf" = "${pkgs.noto-fonts-color-emoji}/share/fonts/noto/NotoColorEmoji.ttf";
+  };
+
+  jellyfin-mpv-shim = pkgs.jellyfin-mpv-shim.overridePythonAttrs (old: {
+    makeWrapperArgs = (old.makeWrapperArgs or []) ++ ["--prefix" "XDG_DATA_DIRS" ":" "${shimFonts}/share"];
+    # The mpv window's app id is com.github.iwalton3.jellyfin-mpv-shim; the
+    # desktop entry has to carry that name for Plasma to find its icon.
+    desktopItems = [
+      (pkgs.makeDesktopItem {
+        name = "com.github.iwalton3.jellyfin-mpv-shim";
+        exec = "jellyfin-mpv-shim";
+        icon = "jellyfin-mpv-shim";
+        desktopName = "Jellyfin MPV Shim";
+        startupWMClass = "com.github.iwalton3.jellyfin-mpv-shim";
+        categories = ["Video" "AudioVideo" "TV" "Player"];
+      })
+    ];
+  });
+
   # Heavy GPU work: RAVU prescaler, ewa_lanczos (jinc) up/down/chroma scaling,
   # and motion interpolation. Skipped on low-end GPUs that lag at fullscreen.
   highEndRendering = {
@@ -224,7 +251,10 @@ in {
   };
   services.jellyfin-mpv-shim = {
     enable = true;
+    package = jellyfin-mpv-shim;
   };
+  # For the launcher entry and the window/taskbar icon.
+  home.packages = [jellyfin-mpv-shim];
 
   programs.noctalia-shell.settings.audio.preferredPlayer =
     lib.mkIf config.programs.noctalia-shell.enable "mpv";
