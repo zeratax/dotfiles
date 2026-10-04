@@ -5,11 +5,7 @@
   noctalia-shell,
   ...
 }: let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-  enablePlugin = {
-    enabled = true;
-    sourceUrl = pluginSource;
-  };
+  enablePlugin = import ./official-plugin.nix;
 in {
   programs.noctalia-shell = {
     enable = true;
@@ -100,7 +96,7 @@ in {
         {
           enabled = true;
           name = "Official Noctalia Plugins";
-          url = pluginSource;
+          url = enablePlugin.sourceUrl;
         }
       ];
       states = lib.genAttrs [

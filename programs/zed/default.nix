@@ -3,9 +3,7 @@
   config,
   lib,
   ...
-}: let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+}: {
   programs.zed-editor = {
     enable = true;
     # On non-NixOS hosts, wrap with nixGL so it can use the system GPU driver
@@ -47,9 +45,6 @@ in {
         enabled = true;
       }
     ];
-    plugins.states.zed-provider = {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    plugins.states.zed-provider = import ../noctalia/official-plugin.nix;
   };
 }

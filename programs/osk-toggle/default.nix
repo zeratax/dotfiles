@@ -3,9 +3,7 @@
   config,
   lib,
   ...
-}: let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+}: {
   home.packages = [
     (pkgs.wvkbd.overrideAttrs (old: {
       makeFlags = ["LAYOUT=deskintl"];
@@ -14,10 +12,7 @@ in {
   ];
 
   programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
-    plugins.states.osk-toggle = {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    plugins.states.osk-toggle = import ../noctalia/official-plugin.nix;
     pluginSettings.osk-toggle = {
       backend = "wvkbd";
       hideWhenUnavailable = false;
