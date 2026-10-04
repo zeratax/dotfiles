@@ -115,6 +115,7 @@
       gitUserEmail = "contact@zera.tax";
       gpgSigningKey = null;
       gpgSignByDefault = false;
+      gpgSshSupport = false;
       sshKeyFile = "~/.ssh/id_rsa";
       githubUser = "ZerataX";
     };
@@ -124,6 +125,7 @@
       gitUserEmail = "jabdinghoff@lancier-monitoring.de";
       gpgSigningKey = null;
       gpgSignByDefault = false;
+      gpgSshSupport = false;
       sshKeyFile = "~/.ssh/id_ed25519";
       githubUser = "jabdinghoff";
     };

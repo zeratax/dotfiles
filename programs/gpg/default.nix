@@ -13,7 +13,7 @@
 
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = userConfig.gpgSignByDefault;
+    enableSshSupport = userConfig.gpgSshSupport;
     pinentry.package = pkgs.pinentry-curses;
     extraConfig = ''
       allow-loopback-pinentry
