@@ -7,6 +7,3 @@ nmap ga <Plug>(EasyAlign)
 nmap <F8> :TagbarToggle<CR>
 
 command J :call JSONify()
-
-nnoremap ni :call GoToNextIndent(1)<CR>
-nnoremap pi :call GoToNextIndent(-1)<CR>
