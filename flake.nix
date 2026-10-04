@@ -188,6 +188,7 @@
           };
         modules = [
           ./profiles/gaming.nix
+          ./services/moonshine-mic
           ({
             pkgs,
             lib,

@@ -3,6 +3,8 @@
     ./minimalDesktop.nix
     ../programs/firefox
     ../programs/kde-connect
+    # game streaming client (host: kaine, moonshine)
+    ../programs/moonlight
     ../programs/niri
     ../programs/noctalia
     ../programs/screen-toolkit
@@ -16,8 +18,6 @@
     packages = with pkgs; [
       # streaming/recording
       obs-studio
-      # game streaming client (host: kaine, moonshine)
-      moonlight-qt
     ];
   };
 }
