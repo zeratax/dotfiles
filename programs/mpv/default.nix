@@ -43,7 +43,7 @@ in {
     # (mpv renders via vulkan/gpu-next). Identity (no-op) on NixOS.
     package = lib.mkIf config.targets.genericLinux.enable (config.lib.nixGL.wrap pkgs.mpv);
 
-    defaultProfiles = lib.optional (!lowEndGpu) "gpu-hq";
+    defaultProfiles = lib.optional (!lowEndGpu) "high-quality";
 
     config =
       {
@@ -141,7 +141,7 @@ in {
       };
 
       # Streaming
-      # Naming Convensions:
+      # Naming Conventions:
       # V = Very Low, L = Low, M = Medium, H = High, U = Ultra, S = Supreme
       # Very Low = 480p, Low = 720p, Medium = 1080p, High = 1440p, Ultra = 2160p (4K), Supreme = 4320p (8K)
       # 30 = 30 frames per second, 60 = 60 frames per second
@@ -153,7 +153,7 @@ in {
       };
 
       S30 = {
-        profile-desc = "2160p (4K) 60 FPS";
+        profile-desc = "4320p (8K) 30 FPS";
         ytdl-format = "bestvideo[height<=?4320][fps<=?30][vcodec!=?vp9]+bestaudio/best";
       };
 
