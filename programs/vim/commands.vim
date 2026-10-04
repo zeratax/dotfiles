@@ -1,5 +1,5 @@
 function! JSONify()
-  %!python -mjson.tool
+  %!jq .
   set syntax=json
 endfunction
 

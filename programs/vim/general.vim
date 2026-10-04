@@ -29,17 +29,11 @@ set expandtab
 set sw=2
 set sts=2
 " Except for Makefiles: Hard tabs of width 2
-autocmd FileType make set ts=2
+autocmd FileType make setlocal noexpandtab ts=2
 " And Markdown
-autocmd FileType mkd set sw=4
-autocmd FileType mkd set sts=4
+autocmd FileType markdown setlocal sw=4 sts=4
 autocmd BufRead,BufNewFile *.md set filetype=markdown
 autocmd BufRead,BufNewFile *.cql set filetype=cql
-" And Java
-autocmd FileType java set sw=2
-
-" Default to Unix LF line endings
-set ffs=unix
 
 let g:vim_markdown_folding_disabled=1 " Markdown
 let javaScript_fold=1                 " JavaScript
@@ -79,5 +73,5 @@ set fileformats=unix,dos
 " remove trailing whitespaces and ^M chars
 augroup ws
   au!
-  autocmd FileType c,cpp,java,php,js,json,css,scss,sass,py,rb,coffee,python,twig,xml,yml autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
+  autocmd FileType c,cpp,java,php,javascript,json,css,scss,sass,ruby,coffee,python,twig,xml,yaml autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
 augroup end

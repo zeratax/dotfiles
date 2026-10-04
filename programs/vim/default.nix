@@ -13,7 +13,6 @@ in {
       source ${./commands.vim}
       source ${./general.vim}
       source ${./keybindings.vim}
-      source ${./plugin-settings.vim}
       source ${./ui.vim}
     '';
 
