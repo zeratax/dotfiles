@@ -54,8 +54,9 @@ nh home switch -- --override-input neovim-config path:$HOME/Projects/neovim-conf
 
 ```
 flake.nix       machine definitions and flake inputs
+hosts/          host-specific modules (kaine's nixGL setup)
 profiles/       machine profiles (see above)
 programs/       per-program home-manager modules
-services/       user services (niri session restore, sshfs mount, plasmashell fix)
+services/       user services (niri session restore, sshfs mount, moonshine mic, plasmashell fix)
 patches/        patches applied to flake inputs at eval time
 ```
