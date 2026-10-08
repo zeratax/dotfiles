@@ -1,10 +1,8 @@
-{config, lib, ...}:
-let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+{
+  config,
+  lib,
+  ...
+}: {
   programs.noctalia-shell.plugins.states.kde-connect =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
 }

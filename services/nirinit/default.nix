@@ -1,11 +1,14 @@
-{nirinit, pkgs, ...}: {
-  xdg.configFile."nirinit/config.toml".source =
-    (pkgs.formats.toml {}).generate "nirinit-config.toml" {
-      skip.apps = [
-        "noctalia-shell"
-        "xwayland-satellite"
-      ];
-    };
+{
+  nirinit,
+  pkgs,
+  ...
+}: {
+  xdg.configFile."nirinit/config.toml".source = (pkgs.formats.toml {}).generate "nirinit-config.toml" {
+    skip.apps = [
+      "noctalia-shell"
+      "xwayland-satellite"
+    ];
+  };
 
   systemd.user.services.nirinit = {
     Unit = {

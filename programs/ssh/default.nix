@@ -1,7 +1,9 @@
-{userConfig, config, lib, ...}:
-let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+{
+  userConfig,
+  config,
+  lib,
+  ...
+}: {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -20,8 +22,5 @@ in {
   };
 
   programs.noctalia-shell.plugins.states.ssh-sessions =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
 }

@@ -24,8 +24,5 @@ in {
   ];
 
   programs.noctalia-shell.plugins.states.claude-code-panel =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-    };
+    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
 }

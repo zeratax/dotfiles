@@ -1,4 +1,9 @@
-{config, lib, pkgs, ...}: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs.ghostty = {
     enable = true;
     # On non-NixOS hosts, wrap with nixGL so it can acquire an OpenGL context
@@ -20,7 +25,10 @@
     settings = {
       appLauncher.terminalCommand = "ghostty -e";
       templates.activeTemplates = [
-        {id = "ghostty"; enabled = true;}
+        {
+          id = "ghostty";
+          enabled = true;
+        }
       ];
     };
     pluginSettings.tailscale.terminalCommand = "ghostty";

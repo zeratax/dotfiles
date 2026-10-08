@@ -3,22 +3,16 @@
   config,
   lib,
   ...
-}:
-let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+}: {
   home.packages = [
-    (pkgs.wvkbd.overrideAttrs {
+    (pkgs.wvkbd.overrideAttrs (old: {
       makeFlags = ["LAYOUT=deskintl"];
-      meta.mainProgram = "wvkbd-deskintl";
-    })
+      meta = old.meta // {mainProgram = "wvkbd-deskintl";};
+    }))
   ];
 
   programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
-    plugins.states.osk-toggle = {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    plugins.states.osk-toggle = import ../noctalia/official-plugin.nix;
     pluginSettings.osk-toggle = {
       backend = "wvkbd";
       hideWhenUnavailable = false;

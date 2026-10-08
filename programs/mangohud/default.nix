@@ -20,6 +20,10 @@
     font_size = 20;
     position = "top-left";
     toggle_hud = "Shift_R+F12";
+    # MANGOHUD=1 (below) enables the layer in every Vulkan app, not just games.
+    # Keep it out of this config's other Vulkan apps (MangoHud matches the
+    # executable's basename; Steam and the launchers are on its built-in list).
+    blacklist = "mpv,zed-editor";
   };
 
   # Same serialization as the home-manager mangohud module: a bare key for

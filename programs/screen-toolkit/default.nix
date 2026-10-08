@@ -3,10 +3,7 @@
   config,
   lib,
   ...
-}:
-let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in {
+}: {
   home.packages = with pkgs; [
     ffmpeg
     imagemagick
@@ -17,8 +14,5 @@ in {
   ];
 
   programs.noctalia-shell.plugins.states.screen-toolkit =
-    lib.mkIf config.programs.noctalia-shell.enable {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
 }

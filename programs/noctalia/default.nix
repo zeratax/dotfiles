@@ -5,18 +5,13 @@
   noctalia-shell,
   ...
 }: let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-  enablePlugin = {
-    enabled = true;
-    sourceUrl = pluginSource;
-  };
+  enablePlugin = import ./official-plugin.nix;
 in {
   programs.noctalia-shell = {
     enable = true;
-    package =
-      noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-        buildInputs = (old.buildInputs or []) ++ [pkgs.qt6.qtwebsockets];
-      });
+    package = noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or []) ++ [pkgs.qt6.qtwebsockets];
+    });
     settings = {
       bar = {
         position = "top";
@@ -101,7 +96,7 @@ in {
         {
           enabled = true;
           name = "Official Noctalia Plugins";
-          url = pluginSource;
+          url = enablePlugin.sourceUrl;
         }
       ];
       states = lib.genAttrs [

@@ -1,49 +1,38 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: let
+  inherit (lib.hm.nushell) toNushell;
+  home = config.home.homeDirectory;
+  profile = config.home.profileDirectory;
+
+  # hm-session-vars.sh values may use $HOME, which is known here. Anything else
+  # with a `$` is shell syntax that nushell can't evaluate, so it is left out.
+  expandHome = v: builtins.replaceStrings ["\${HOME}" "$HOME"] [home home] (toString v);
+  needsShell = lib.hasInfix "$";
+  sessionVariables = lib.mapAttrs (_: expandHome) config.home.sessionVariables;
+  usable = lib.filterAttrs (_: v: !needsShell v) sessionVariables;
+  skipped = lib.attrNames (lib.filterAttrs (_: needsShell) sessionVariables);
+in {
   programs.nushell = {
     enable = true;
     extraLogin = ''
-      if ($env.PATH | split row (char esep) | where $it == $"($env.HOME)/.nix-profile/bin" | is-empty) {
-        $env.PATH = ($env.PATH | split row (char esep) | prepend [
-          $"($env.HOME)/.nix-profile/bin"
-          "/nix/var/nix/profiles/default/bin"
-        ])
-      }
+      # home.sessionPath in front of the nix profiles, as in hm-session-vars.sh
+      $env.PATH = ($env.PATH | split row (char esep) | prepend ${toNushell {} (
+        map expandHome config.home.sessionPath
+        ++ ["${profile}/bin" "/nix/var/nix/profiles/default/bin"]
+      )} | uniq)
 
-      ${
-        let
-          nuPaths = map (p: builtins.replaceStrings ["$HOME"] ["($env.HOME)"] p) config.home.sessionPath;
-        in
-        if nuPaths == [] then ""
-        else ''
-          $env.PATH = ($env.PATH | split row (char esep) | prepend [
-            ${builtins.concatStringsSep "\n    " (map (p: "$\"${p}\"") nuPaths)}
-          ] | str join (char esep))
-        ''
-      }
+      # home.sessionVariables, as in hm-session-vars.sh
+      load-env ${toNushell {} usable}
+      ${lib.optionalString (skipped != []) "# skipped, they need a shell: ${lib.concatStringsSep " " skipped}"}
 
-      # Session variables from home.sessionVariables (mirrors hm-session-vars.sh)
-      ${builtins.concatStringsSep "\n" (
-        builtins.attrValues (builtins.mapAttrs
-          (name: value:
-            let
-              strVal = toString value;
-              # Replace $HOME with nushell equivalent
-              nuVal = builtins.replaceStrings ["$HOME"] ["($env.HOME)"] strVal;
-            in
-            # Skip values with remaining shell expressions
-            if builtins.match ".*\\$\\{.*" nuVal != null
-            then "# ${name} skipped: contains shell expression"
-            else "$env.${name} = $\"${nuVal}\""
-          )
-          config.home.sessionVariables
-        )
-      )}
-
-      # XDG_DATA_DIRS needs nix profile share paths
-      $env.XDG_DATA_DIRS = ($env.XDG_DATA_DIRS? | default "" | split row (char esep) | prepend [
-        $"($env.HOME)/.nix-profile/share"
+      # XDG_DATA_DIRS needs the nix profile share paths (default per XDG spec)
+      $env.XDG_DATA_DIRS = ($env.XDG_DATA_DIRS? | default "/usr/local/share:/usr/share" | split row (char esep) | prepend [
+        ${toNushell {} "${profile}/share"}
         "/nix/var/nix/profiles/default/share"
-      ] | str join (char esep))
+      ] | uniq | str join (char esep))
     '';
   };
 }

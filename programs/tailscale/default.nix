@@ -1,13 +1,11 @@
-{ config, lib, ... }:
-let
-  pluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in
+{
+  config,
+  lib,
+  ...
+}:
 lib.mkIf config.programs.noctalia-shell.enable {
   programs.noctalia-shell = {
-    plugins.states.tailscale = {
-      enabled = true;
-      sourceUrl = pluginSource;
-    };
+    plugins.states.tailscale = import ../noctalia/official-plugin.nix;
     pluginSettings.tailscale = {
       refreshInterval = 5000;
       compactMode = true;

@@ -1,4 +1,8 @@
-{pkgs, config, ...}: let
+{
+  pkgs,
+  config,
+  ...
+}: let
   shell =
     if config.programs.nushell.enable
     then "nu"
@@ -40,8 +44,6 @@ in {
       zwd = "zellij attach $(echo $(pwd) | sed 's/\\//\\\\/g') -c";
     };
   };
-
-  home.sessionVariables = {ZELLIJ_AUTO_ATTACH = "true";};
 
   programs.zellij = {
     enable = true;

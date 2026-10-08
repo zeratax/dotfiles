@@ -3,8 +3,7 @@
   jj-starship,
   pkgs,
   ...
-}:
-let
+}: let
   jj-starship-bin = "${jj-starship.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/jj-starship";
 in {
   programs.starship = {

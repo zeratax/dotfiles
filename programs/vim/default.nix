@@ -13,7 +13,6 @@ in {
       source ${./commands.vim}
       source ${./general.vim}
       source ${./keybindings.vim}
-      source ${./plugin-settings.vim}
       source ${./ui.vim}
     '';
 
@@ -31,5 +30,5 @@ in {
   };
 
   home.packages =
-    lib.mkIf (builtins.elem pkgs.vimPlugins.tagbar cfg.plugins) [pkgs.ctags];
+    lib.mkIf (builtins.elem pkgs.vimPlugins.tagbar cfg.plugins) [pkgs.universal-ctags];
 }
