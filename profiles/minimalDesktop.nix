@@ -41,15 +41,19 @@ in {
       (
         if config.targets.genericLinux.enable
         then
-          symlinkJoin {
+          # nixGL's driver libs live in /nix/store, which the sandbox can see, so this gives
+          # the app (and WebGPU in its browser pane) the real GPU instead of software rendering.
+          # Chromium still blocklists WebGPU on Linux/NVIDIA, hence --enable-unsafe-webgpu.
+          config.lib.nixGL.wrap (symlinkJoin {
             name = "claude-desktop";
             paths = [claude-desktop];
             nativeBuildInputs = [makeWrapper];
             postBuild = ''
               wrapProgram $out/bin/claude-desktop \
-                --set FONTCONFIG_FILE ${sandboxFontsConf}
+                --set FONTCONFIG_FILE ${sandboxFontsConf} \
+                --add-flags "--enable-unsafe-webgpu"
             '';
-          }
+          })
         else claude-desktop
       )
       llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode2-desktop
