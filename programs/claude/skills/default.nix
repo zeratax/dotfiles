@@ -1,7 +1,7 @@
-# Agent skills that need a human in the loop: root commands (agent-sudo) and
-# KeePass passwords (agent-kp). Both ask Jona through KDE dialogs and keep his
-# passwords out of the agent's context. NixOS + Plasma only (pkexec from
-# /run/wrappers, kdialog), so only the desktop profile imports this.
+# Agent skills: root commands (agent-sudo) and KeePass passwords (agent-kp) ask
+# Jona through KDE dialogs and keep his passwords out of the agent's context;
+# vacuula reads the robot vacuum's self-hosted server. NixOS + Plasma only
+# (pkexec from /run/wrappers, kdialog), so only the desktop profile imports this.
 {
   pkgs,
   lib,
@@ -19,12 +19,20 @@
       flakeIgnore = ["E501"];
     }
     (builtins.replaceStrings ["@kdialog@"] [kdialog] (builtins.readFile ./agent-kp.py));
+  # read-only CLI for the Neato's self-hosted Vacuula server (on homeassistant)
+  vacuula =
+    pkgs.writers.writePython3Bin "vacuula" {
+      libraries = [pkgs.python3Packages.pillow];
+      flakeIgnore = ["E501"];
+    }
+    (builtins.readFile ./vacuula.py);
 in {
-  home.packages = [agent-sudo agent-kp];
+  home.packages = [agent-sudo agent-kp vacuula];
 
   home.file = {
     ".claude/skills/sudo/SKILL.md".source = ./sudo.md;
     ".claude/skills/keepass/SKILL.md".source = ./keepass.md;
+    ".claude/skills/vacuula/SKILL.md".source = ./vacuula.md;
   };
 
   # agent-kp talks to KeePassXC over the Secret Service API, so KWallet must not
