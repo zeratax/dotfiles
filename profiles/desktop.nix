@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   imports = [
     ./minimalDesktop.nix
+    ../programs/claude/skills
     ../programs/firefox
     ../programs/kde-connect
     # game streaming client (host: kaine, moonshine)
