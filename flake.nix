@@ -203,6 +203,16 @@
         };
       };
 
+      # old ThinkPad L450 (Broadwell iGPU)
+      "jonaa@navi" = mkHome {
+        system = "x86_64-linux";
+        username = "jonaa";
+        modules = [./profiles/desktop.nix];
+        hostConfig = {
+          lowEndGpu = true;
+        };
+      };
+
       # Minimal profile for any machine
       # builtins.getEnv returns "" in pure eval (CI), fall back so the config can still be checked
       "minimal" = let
