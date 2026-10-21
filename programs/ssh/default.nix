@@ -18,6 +18,11 @@
         User = "matrix";
         IdentityFile = userConfig.sshKeyFile;
       };
+      navi = {
+        HostName = "navi.fritz.box";
+        User = "jonaa";
+        IdentityFile = userConfig.sshKeyFile;
+      };
     };
   };
 
