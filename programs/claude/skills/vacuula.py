@@ -38,6 +38,8 @@ def api(path, body=None, timeout=40):
         sys.exit(f"HTTP {e.code} on {path}: {e.read().decode(errors='replace')[:300]}")
     except urllib.error.URLError as e:
         sys.exit(f"cannot reach {BASE}: {e.reason}")
+    except OSError as e:  # timeouts/resets mid-response aren't wrapped in URLError
+        sys.exit(f"cannot reach {BASE}: {e}")
 
 
 def pick_serial(serial):
