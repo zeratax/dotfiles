@@ -17,10 +17,18 @@
   # Its own nixpkgs is deliberately NOT followed — see the input in flake.nix: the
   # bun2nix-based FODs record hashes against that pin, and overriding it invalidates them.
   agents = llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
+
+  # finishes a /login waiting in a zellij session on another host: `cc-login nas archive-browser`
+  cc-login = pkgs.writeShellApplication {
+    name = "cc-login";
+    runtimeInputs = with pkgs; [coreutils gawk openssh xdg-utils];
+    text = builtins.readFile ./cc-login.sh;
+  };
 in {
   home.packages = [
     agents.claude-code
     agents.claude-agent-acp
+    cc-login
   ];
 
   programs.noctalia-shell.plugins.states.claude-code-panel =
