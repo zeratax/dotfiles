@@ -26,13 +26,21 @@
       flakeIgnore = ["E501"];
     }
     (builtins.readFile ./vacuula.py);
+  # known-WLAN-device lists (MAC filter) on all FRITZ! APs at once
+  fritz-wlan =
+    pkgs.writers.writePython3Bin "fritz-wlan" {
+      libraries = [pkgs.python3Packages.fritzconnection];
+      flakeIgnore = ["E501"];
+    }
+    (builtins.readFile ./fritz-wlan.py);
 in {
-  home.packages = [agent-sudo agent-kp vacuula];
+  home.packages = [agent-sudo agent-kp vacuula fritz-wlan];
 
   home.file = {
     ".claude/skills/sudo/SKILL.md".source = ./sudo.md;
     ".claude/skills/keepass/SKILL.md".source = ./keepass.md;
     ".claude/skills/vacuula/SKILL.md".source = ./vacuula.md;
+    ".claude/skills/fritz-wlan/SKILL.md".source = ./fritz-wlan.md;
   };
 
   # agent-kp talks to KeePassXC over the Secret Service API, so KWallet must not
