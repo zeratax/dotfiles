@@ -6,8 +6,9 @@ description: Check on Jona's Neato robot vacuum through the self-hosted Vacuula 
 # Neato robot via `vacuula`
 
 Jona's Neato (a BotVac **D7** Connected, Gen3, serial `GPC50318-4006a0f30ab3`)
-talks to a self-hosted Vacuula server, the HA add-on `6a057cb4_vacuula-beta`
-at **http://192.168.178.181:8089** (web UI at the same address; override with
+talks to a self-hosted Vacuula server, the HA add-on `6a057cb4_vacuula`
+(stable, 1.1.0 since 2026-10-25) at **http://192.168.178.181:8089** (web UI at
+the same address, or the add-on's "Open Web UI" in HA; override with
 `VACUULA_URL`). Background, setup history and gotchas live in the vault:
 `projects/vacuula/NOTES.md`.
 
@@ -40,6 +41,10 @@ the lidar saw, blue = cleaned area, red = dock/start.
 - `status` failing with "not connected" otherwise means the robot isn't talking to the
   server (off, out of Wi-Fi, or the server just restarted; it reconnects within
   about a minute). The robot's Wi-Fi LED is solid when connected.
+- **Dropped while docked and idle, never comes back** (vacuula#58/#63): the
+  server logs `Robot … disconnected` with no run going, and the robot stays on
+  Wi-Fi (it still pings) but doesn't reconnect until it's power-cycled. Seen
+  2026-10-25 on server/installer 1.1.0-b3; 1.1.0 is supposed to fix most of it.
 
 ## Moving the robot (ask first)
 
@@ -65,6 +70,7 @@ vacuula cmd startCleaning '{"category": 2, "mode": 1, "navigationMode": 1}'
 - `POST /api/robot/<serial>/command` with `{"cmd": …, "params": {…}}`; the
   server waits up to 30 s for the robot's answer
 - `GET /api/robot/<serial>/connect`: SSE, only emits when the robot pushes an event
-- Server logs: `ssh root@192.168.178.181 'ha apps logs 6a057cb4_vacuula-beta'`.
+- Server logs: `ssh -F /dev/null root@192.168.178.181 'ha apps logs 6a057cb4_vacuula'`
+  (full log incl. older lines: `/addon_configs/6a057cb4_vacuula/vacuula.log*`).
   Raw `FloorMap.png`/`RunMap.png` per run are under
-  `/addon_configs/6a057cb4_vacuula-beta/uploads/maps/<serial>/<run-id>/`.
+  `/addon_configs/6a057cb4_vacuula/uploads/maps/<serial>/<run-id>/`.
