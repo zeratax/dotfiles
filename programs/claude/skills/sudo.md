@@ -1,6 +1,6 @@
 ---
 name: sudo
-description: Run a command as root on this machine. Plain sudo/pkexec fail in agent sessions (NoNewPrivs); use `agent-sudo`, which shows Jona the command plus your reason in a dialog, lets him approve or deny, and authenticates via polkit. Use whenever a task needs root (nixos-rebuild switch, systemctl on system units, editing /etc, reading root-only logs, …).
+description: Run a command as root on this machine. Plain sudo/pkexec fail in agent sessions (NoNewPrivs, and on kaine a container without pacman/pkexec); use `agent-sudo`, which shows Jona the command plus your reason in a dialog, lets him approve or deny, and authenticates via polkit. Use whenever a task needs root (nixos-rebuild switch, pacman -S, systemctl on system units, editing /etc, reading root-only logs, …).
 ---
 
 # Root commands via `agent-sudo`
@@ -18,7 +18,14 @@ way:
 ```bash
 agent-sudo --reason "Activate the nixos-config change that enables X" -- \
   nixos-rebuild switch --flake ~/Projects/nixos-config#surface
+agent-sudo --reason "Install Blender for the house model" -- \
+  pacman -S --needed --noconfirm blender        # kaine (CachyOS)
 ```
+
+On kaine the Claude desktop app runs agents in a container that hides the
+host's `/usr` (no `pacman`, no `pkexec`), so `agent-sudo` re-runs itself on the
+host first. It resolves the command there, so `pacman` works even though you
+can't see it.
 
 ## Rules
 
@@ -35,14 +42,19 @@ agent-sudo --reason "Activate the nixos-config change that enables X" -- \
   **127 = polkit authentication failed**. Don't retry the same request. Ask
   Jona what he wants instead.
 - Use programs from the system or the nix store. Anything else (e.g.
-  `~/.local/bin`) gets a red warning in the dialog, because it could be swapped
-  between approval and execution.
-- Root gets a fixed `PATH` (`/run/wrappers/bin:/run/current-system/sw/bin`).
+  `~/.local/bin`, `/usr/local`) gets a red warning in the dialog, because it could
+  be swapped between approval and execution.
+- Root gets a fixed system `PATH`: `/run/wrappers/bin:/run/current-system/sw/bin`
+  on NixOS, `/usr/bin:/usr/local/sbin:/usr/local/bin` on generic Linux (kaine).
   For anything else, pass an absolute path (e.g. `~/.nix-profile/bin/foo`).
+- Arguments are passed literally: `$VAR` is not expanded anywhere on the way.
 - stdin, stdout and stderr are passed through and the command's exit code is
-  returned. The cwd is kept.
-- Prefer `nixos-rebuild switch --flake ~/Projects/nixos-config#surface` over
-  `nh os switch` (nh calls sudo internally). Build first without root
+  returned. The cwd is kept. On kaine it must also exist outside the container.
+  `~`, `/tmp` (scratchpad included) and the project dirs do. The container's own
+  `/usr`, `/etc` and top-level dirs you create in its `/` don't.
+- pacman has no TTY here: always pass `--noconfirm`.
+- NixOS: prefer `nixos-rebuild switch --flake ~/Projects/nixos-config#surface`
+  over `nh os switch` (nh calls sudo internally). Build first without root
   (`nh os build ~/Projects/nixos-config`) so the switch itself is quick.
 - Every request (approved, denied, exit code) is logged to
   `~/.local/state/agent-sudo.log`.

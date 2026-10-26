@@ -49,6 +49,10 @@
     mkdir -p "$(dirname ${stamp})" && echo "$ver" > ${stamp}
   '';
 in {
+  # Only agent-sudo from the agent skills: the rest of that module (agent-kp's
+  # KWallet change, …) is set up for surface.
+  imports = [../programs/claude/skills/sudo.nix];
+
   # kaine runs CachyOS, not NixOS: let home-manager configure
   # graphical apps but use nixGL to run them against the system
   # NVIDIA driver. Vulkan is enabled because mpv (gpu-api=vulkan) and

@@ -1,18 +1,13 @@
-# Agent skills: root commands (agent-sudo) and KeePass passwords (agent-kp) ask
-# Jona through KDE dialogs and keep his passwords out of the agent's context;
-# vacuula reads the robot vacuum's self-hosted server. NixOS + Plasma only
-# (pkexec from /run/wrappers, kdialog), so only the desktop profile imports this.
+# Agent skills: root commands (agent-sudo, ./sudo.nix) and KeePass passwords
+# (agent-kp) ask Jona through KDE dialogs and keep his passwords out of the
+# agent's context; vacuula reads the robot vacuum's self-hosted server. Only the
+# desktop profile imports all of this; kaine imports just ./sudo.nix.
 {
   pkgs,
   lib,
   ...
 }: let
   kdialog = lib.getExe' pkgs.kdePackages.kdialog "kdialog";
-  agent-sudo = pkgs.writeShellApplication {
-    name = "agent-sudo";
-    runtimeInputs = with pkgs; [coreutils kdePackages.kdialog];
-    text = builtins.readFile ./agent-sudo.sh;
-  };
   agent-kp =
     pkgs.writers.writePython3Bin "agent-kp" {
       libraries = [pkgs.python3Packages.secretstorage];
@@ -34,10 +29,11 @@
     }
     (builtins.readFile ./fritz-wlan.py);
 in {
-  home.packages = [agent-sudo agent-kp vacuula fritz-wlan];
+  imports = [./sudo.nix];
+
+  home.packages = [agent-kp vacuula fritz-wlan];
 
   home.file = {
-    ".claude/skills/sudo/SKILL.md".source = ./sudo.md;
     ".claude/skills/keepass/SKILL.md".source = ./keepass.md;
     ".claude/skills/vacuula/SKILL.md".source = ./vacuula.md;
     ".claude/skills/fritz-wlan/SKILL.md".source = ./fritz-wlan.md;
