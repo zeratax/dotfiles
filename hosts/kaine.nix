@@ -53,6 +53,11 @@ in {
   # KWallet change, …) is set up for surface.
   imports = [../programs/claude/skills/sudo.nix];
 
+  # watch-video: yt-dlp + Whisper on the 3090. The skill lives in its repo so
+  # it's edited together with the tool, hence the out-of-store link.
+  home.file.".claude/skills/watch-video".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Projects/watch-video/skill";
+
   # kaine runs CachyOS, not NixOS: let home-manager configure
   # graphical apps but use nixGL to run them against the system
   # NVIDIA driver. Vulkan is enabled because mpv (gpu-api=vulkan) and
