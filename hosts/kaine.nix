@@ -68,6 +68,13 @@ in {
     vulkan.enable = true;
   };
 
+  # genericLinux also sets NIX_PATH to ~/.nix-defexpr/channels, and a set
+  # NIX_PATH replaces Determinate's `extra-nix-path = nixpkgs=flake:…` from
+  # nix.conf, so `nix-shell -p` found no <nixpkgs>. Resolve it via the
+  # registry like Determinate would.
+  nix.nixPath = ["nixpkgs=flake:nixpkgs"];
+  nix.keepOldNixPath = false;
+
   # Auto-detection is impure by construction (it reads /proc and uses
   # `builtins.currentTime` to defeat caching), so kaine's config only
   # ever evaluates with `--impure`. That flag can't be moved into
