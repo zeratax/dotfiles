@@ -38,6 +38,14 @@ On kaine use `nhs` instead: it adds `--impure` so nixGL can detect the running N
 
 Per-machine settings (git user, ssh key, gpg) are passed via `userConfig`, per-host hardware knobs (e.g. `lowEndGpu`) via `hostConfig`.
 
+## Updates
+
+Dependabot opens a flake update PR daily and CI builds it. Each desktop machine checks at 09:00 and shows a notification once there's a green PR: **Apply** switches that machine and merges the PR only if activation worked. Other machines then offer the same button for the new `nixos`. To check right away:
+
+```sh
+systemctl --user start --no-block dotfiles-update
+```
+
 ## Neovim
 
 Neovim config lives in a [separate repo](https://github.com/zeratax/neovim-config) with its own flake. It ships a fully wrapped neovim binary with all LSPs, formatters, and tools on PATH. The dotfiles consume it as a flake input.
@@ -57,6 +65,6 @@ flake.nix       machine definitions and flake inputs
 hosts/          host-specific modules (kaine's nixGL setup)
 profiles/       machine profiles (see above)
 programs/       per-program home-manager modules
-services/       user services (niri session restore, sshfs mount, moonshine mic, plasmashell fix)
+services/       user services (niri session restore, sshfs mount, moonshine mic, plasmashell fix, update button)
 patches/        patches applied to flake inputs at eval time
 ```

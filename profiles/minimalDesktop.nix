@@ -9,6 +9,7 @@
     ../programs/ghostty
     ../programs/mpv
     ../programs/zed
+    ../services/dotfiles-update
   ];
   home = {
     packages = with pkgs; [

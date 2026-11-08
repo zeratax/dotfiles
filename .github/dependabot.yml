@@ -2,9 +2,12 @@ version: 2
 updates:
   - package-ecosystem: nix
     directory: /
+    # early, so CI is done before services/dotfiles-update checks
     schedule:
-      interval: weekly
-    # one PR per week for all flake inputs instead of one per input
+      interval: daily
+      time: "04:00"
+      timezone: Europe/Berlin
+    # one PR for all flake inputs instead of one per input
     groups:
       flake-inputs:
         patterns:

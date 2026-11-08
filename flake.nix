@@ -152,6 +152,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = {
           inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit llm-agents nixGL nixpkgs-nixgl userConfig hostConfig;
+          # lets services/dotfiles-update tell what this generation was built from
+          dotfilesNarHash = self.narHash;
         };
         modules =
           [
