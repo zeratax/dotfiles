@@ -3,10 +3,5 @@
   lib,
   ...
 }: {
-  programs.noctalia-shell.settings.templates.activeTemplates = lib.mkIf config.programs.noctalia-shell.enable [
-    {
-      id = "steam";
-      enabled = true;
-    }
-  ];
+  programs.noctalia.settings.theme.templates.community_ids = lib.mkIf config.programs.noctalia.enable ["steam"];
 }

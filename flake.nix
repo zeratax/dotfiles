@@ -49,20 +49,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    noctalia-shell = {
-      # track v4 maintenance branch — main is v5, a breaking rewrite
-      # (programs.noctalia-shell → programs.noctalia, plugins/pluginSettings removed,
-      # new TOML settings schema). Switch back to main after migrating.
-      url = "github:noctalia-dev/noctalia/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs-noctalia";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # noctalia v4 is unmaintained and can't use Qt 6.12: its quickshell fork
-    # (noctalia-qs) doesn't compile against it, and Qt's new global `Color` QML
-    # singleton shadows v4's theme singleton, which blacks out the whole UI
-    # (noctalia-dev/noctalia#4763). This is the last nixpkgs we ran it on, with
-    # Qt 6.11. Drop the pin after migrating to v5.
-    nixpkgs-noctalia.url = "github:nixos/nixpkgs/fe13242281a67641c0102cdb1087f0ebe586c7df";
 
     nirinit = {
       url = "github:amaanq/nirinit";
@@ -107,7 +97,7 @@
     neovim-config,
     jj-starship,
     jj-hunk,
-    noctalia-shell,
+    noctalia,
     nirinit,
     llm-agents,
     nixGL,
@@ -151,7 +141,7 @@
         # config set here would be dropped; unfree is allowed in profiles/minimal.nix.
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = {
-          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia-shell nirinit llm-agents nixGL nixpkgs-nixgl userConfig hostConfig;
+          inherit nur nixos-vscode-server mpv-prescalers neovim-config jj-starship jj-hunk noctalia nirinit llm-agents nixGL nixpkgs-nixgl userConfig hostConfig;
           # lets services/dotfiles-update tell what this generation was built from
           dotfilesNarHash = self.narHash;
         };

@@ -36,15 +36,10 @@
     };
   };
 
-  home.packages = lib.mkIf config.programs.noctalia-shell.enable [pkgs.sqlite];
+  home.packages = lib.mkIf config.programs.noctalia.enable [pkgs.sqlite];
 
-  programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
-    settings.templates.activeTemplates = [
-      {
-        id = "zed";
-        enabled = true;
-      }
-    ];
-    plugins.states.zed-provider = import ../noctalia/official-plugin.nix;
+  programs.noctalia.settings = lib.mkIf config.programs.noctalia.enable {
+    theme.templates.community_ids = ["zed"];
+    plugins.enabled = ["cleboost/zed-provider"];
   };
 }

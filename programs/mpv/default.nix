@@ -263,7 +263,4 @@ in {
   };
   # For the launcher entry and the window/taskbar icon.
   home.packages = [jellyfin-mpv-shim];
-
-  programs.noctalia-shell.settings.audio.preferredPlayer =
-    lib.mkIf config.programs.noctalia-shell.enable "mpv";
 }

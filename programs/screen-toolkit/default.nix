@@ -6,6 +6,7 @@
 }: {
   home.packages = with pkgs; [
     ffmpeg
+    hyprpicker
     imagemagick
     satty
     tesseract
@@ -13,6 +14,8 @@
     zbar
   ];
 
-  programs.noctalia-shell.plugins.states.screen-toolkit =
-    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
+  programs.noctalia.settings = lib.mkIf config.programs.noctalia.enable {
+    plugins.enabled = ["alexander/screen-toolkit"];
+    widget.screen-toolkit.type = "alexander/screen-toolkit:widget";
+  };
 }

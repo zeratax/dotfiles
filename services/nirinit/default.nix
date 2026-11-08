@@ -5,7 +5,7 @@
 }: {
   xdg.configFile."nirinit/config.toml".source = (pkgs.formats.toml {}).generate "nirinit-config.toml" {
     skip.apps = [
-      "noctalia-shell"
+      "dev.noctalia.Noctalia"
       "xwayland-satellite"
     ];
   };

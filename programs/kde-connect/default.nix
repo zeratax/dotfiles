@@ -3,6 +3,8 @@
   lib,
   ...
 }: {
-  programs.noctalia-shell.plugins.states.kde-connect =
-    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
+  programs.noctalia.settings = lib.mkIf config.programs.noctalia.enable {
+    plugins.enabled = ["icefish/phone-connect"];
+    widget.phone-connect.type = "icefish/phone-connect:bar";
+  };
 }

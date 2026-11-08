@@ -26,6 +26,5 @@
     };
   };
 
-  programs.noctalia-shell.plugins.states.ssh-sessions =
-    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
+  programs.noctalia.settings.plugins.enabled = lib.mkIf config.programs.noctalia.enable ["cleboost/ssh-launcher"];
 }

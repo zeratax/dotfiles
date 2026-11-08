@@ -1,7 +1,5 @@
 {
   pkgs,
-  config,
-  lib,
   llm-agents,
   ...
 }: let
@@ -30,7 +28,4 @@ in {
     agents.claude-agent-acp
     cc-login
   ];
-
-  programs.noctalia-shell.plugins.states.claude-code-panel =
-    lib.mkIf config.programs.noctalia-shell.enable (import ../noctalia/official-plugin.nix);
 }

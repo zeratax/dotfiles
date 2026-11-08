@@ -17,20 +17,9 @@
       quick-terminal-position = "top";
       quick-terminal-animation-duration = 0;
       background-opacity = 0.85;
-      theme = lib.mkIf config.programs.noctalia-shell.enable "noctalia";
+      theme = lib.mkIf config.programs.noctalia.enable "noctalia";
     };
   };
 
-  programs.noctalia-shell = lib.mkIf config.programs.noctalia-shell.enable {
-    settings = {
-      appLauncher.terminalCommand = "ghostty -e";
-      templates.activeTemplates = [
-        {
-          id = "ghostty";
-          enabled = true;
-        }
-      ];
-    };
-    pluginSettings.tailscale.terminalCommand = "ghostty";
-  };
+  programs.noctalia.settings.theme.templates.builtin_ids = lib.mkIf config.programs.noctalia.enable ["ghostty"];
 }

@@ -1,128 +1,105 @@
-{
-  config,
-  lib,
-  pkgs,
-  noctalia-shell,
-  ...
-}: let
-  enablePlugin = import ./official-plugin.nix;
-in {
-  programs.noctalia-shell = {
+{config, ...}: {
+  programs.noctalia = {
     enable = true;
-    package = noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-      # from noctalia's own (pinned) nixpkgs so it matches the Qt it's built with
-      buildInputs = (old.buildInputs or []) ++ [noctalia-shell.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.qt6.qtwebsockets];
-    });
     settings = {
-      bar = {
+      shell = {
+        polkit_agent = true;
+        # choices made in the wizard land in settings.toml and override this file
+        setup_wizard_enabled = false;
+        privacy.cam_filter_regex = "wireplumber|pipewire";
+      };
+      bar.main = {
         position = "top";
-        backgroundOpacity = 0.95;
-        widgets = {
-          left = [
-            {id = "Launcher";}
-            {id = "plugin:kde-connect";}
-            {id = "plugin:osk-toggle";}
-            {id = "SystemMonitor";}
-            {id = "plugin:port-monitor";}
-            {id = "ActiveWindow";}
-            {id = "MediaMini";}
-            {id = "plugin:claude-code-panel";}
-          ];
-          center = [
-            {id = "plugin:screen-toolkit";}
-            {id = "Workspace";}
-          ];
-          right = [
-            {id = "Tray";}
-            {id = "NotificationHistory";}
-            {id = "Bluetooth";}
-            {id = "Network";}
-            {id = "plugin:tailscale";}
-            {id = "plugin:hassio";}
-            {id = "Volume";}
-            {id = "Brightness";}
-            {id = "Battery";}
-            {id = "plugin:privacy-indicator";}
-            {id = "Clock";}
-            {id = "ControlCenter";}
-          ];
-        };
-      };
-      colorSchemes = {
-        useWallpaperColors = true;
-      };
-      appLauncher = {
-        enableClipboardHistory = true;
-        enableClipPreview = true;
-      };
-      wallpaper = {
-        overviewEnabled = true;
-      };
-      location = {
-        name = "Münster";
-      };
-      templates = {
-        activeTemplates = [
-          {
-            id = "gtk";
-            enabled = true;
-          }
-          {
-            id = "qt";
-            enabled = true;
-          }
-          {
-            id = "niri";
-            enabled = true;
-          }
+        background_opacity = 0.95;
+        # full width, v5 insets the bar by default
+        margin_ends = 0;
+        capsule = true;
+        start = [
+          "launcher"
+          "phone-connect"
+          "osk-toggle"
+          "cpu"
+          "temp"
+          "ram"
+          "portctl"
+          "active_window"
+          "media"
+        ];
+        center = [
+          "screen-toolkit"
+          "workspaces"
+        ];
+        end = [
+          "tray"
+          "notifications"
+          "bluetooth"
+          "network"
+          "tailscale"
+          "hassio"
+          "volume"
+          "brightness"
+          "battery"
+          "privacy"
+          "clock"
+          "control-center"
         ];
       };
+      widget = {
+        privacy.hide_inactive = true;
+        portctl.type = "rxtsel/portctl:indicator";
+        hassio.type = "pozzoo/hassio:status";
+      };
+      theme = {
+        source = "wallpaper";
+        wallpaper_scheme = "m3-tonal-spot";
+        templates.builtin_ids = [
+          "gtk3"
+          "gtk4"
+          "qt"
+          "niri"
+        ];
+      };
+      wallpaper.directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
+      # blurred wallpaper in the niri overview, see the layer-rule in ../niri
+      backdrop.enabled = true;
+      location.address = "Münster";
       idle = {
-        enabled = true;
-        screenOffTimeout = 600;
-        lockTimeout = 660;
-        suspendTimeout = 1800;
-        fadeDuration = 5;
-        screenOffCommand = "";
-        lockCommand = "";
-        suspendCommand = "";
-        resumeScreenOffCommand = "";
-        resumeLockCommand = "";
-        resumeSuspendCommand = "";
-        customCommands = "[]";
+        pre_action_fade_seconds = 5;
+        behavior_order = [
+          "screen-off"
+          "lock"
+          "suspend"
+        ];
+        behavior = {
+          screen-off = {
+            timeout = 600;
+            action = "screen_off";
+            enabled = true;
+          };
+          lock = {
+            timeout = 660;
+            action = "lock";
+            enabled = true;
+          };
+          suspend = {
+            timeout = 1800;
+            action = "suspend";
+            enabled = true;
+          };
+        };
       };
-    };
-    plugins = {
-      sources = [
-        {
-          enabled = true;
-          name = "Official Noctalia Plugins";
-          url = enablePlugin.sourceUrl;
-        }
-      ];
-      states = lib.genAttrs [
-        "file-search"
-        "hassio"
-        "kagi-quick-search"
-        "monitor-layout"
-        "polkit-agent"
-        "port-monitor"
-        "privacy-indicator"
-        "unicode-picker"
-      ] (_: enablePlugin);
-      version = 2;
-    };
-    pluginSettings = {
-      privacy-indicator = {
-        hideInactive = true;
-        enableToast = true;
-        removeMargins = false;
-        iconSpacing = 4;
-        activeColor = "primary";
-        inactiveColor = "none";
-        micFilterRegex = "";
-        camFilterRegex = "wireplumber|pipewire";
+      plugins = {
+        # third-party code, so don't let it change underneath us every 6 hours
+        auto_update = "none";
+        enabled = [
+          "liamwh/emoji-picker"
+          "nightwatch75/file-search"
+          "pozzoo/hassio"
+          "raycursive/niri-displays"
+          "rxtsel/portctl"
+        ];
       };
+      plugin_settings."rxtsel/portctl".hide_system_ports = false;
     };
   };
 }

@@ -11,7 +11,7 @@
     imv
     zathura
 
-    # noctalia's Volume widget opens `pwvucontrol || pavucontrol` on middle-click
+    # audio mixer
     pavucontrol
   ];
 }

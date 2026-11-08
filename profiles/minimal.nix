@@ -1,7 +1,7 @@
 {
   pkgs,
   nur,
-  noctalia-shell,
+  noctalia,
   jj-hunk,
   config,
   llm-agents,
@@ -60,11 +60,11 @@
   };
 
   # The noctalia home module (option namespace) is imported everywhere so that
-  # per-program integrations can reference `programs.noctalia-shell.enable`.
+  # per-program integrations can reference `programs.noctalia.enable`.
   # Actually enabling/configuring the shell is opt-in per profile via
   # ../programs/noctalia (currently only surface, see desktop.nix).
   imports = [
-    noctalia-shell.homeModules.default
+    noctalia.homeModules.default
     ../programs/bash
     ../programs/bat
     ../programs/btop
