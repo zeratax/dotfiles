@@ -204,7 +204,7 @@
       "jonaa@surface" = mkHome {
         system = "x86_64-linux";
         username = "jonaa";
-        modules = [./profiles/desktop.nix ./programs/keepassxc/beta.nix];
+        modules = [./profiles/desktop.nix];
         hostConfig = {
           lowEndGpu = true;
         };

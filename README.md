@@ -8,7 +8,7 @@ Machine configs are defined in `flake.nix` as `homeConfigurations`:
 
 | Configuration | Machine | Profile |
 | --- | --- | --- |
-| `jonaa@surface` | NixOS laptop | `desktop` + KeePassXC 2.8 beta |
+| `jonaa@surface` | NixOS laptop | `desktop` |
 | `jonaa@kaine` | CachyOS, NVIDIA via nixGL | `gaming` |
 | `jabdinghoff@LT-JABDINGHOFF` | WSL work machine (x86_64) | `wsl` |
 | `jabdinghoff@sf-jabdinghoff` | WSL work machine (aarch64) | `wsl` |
