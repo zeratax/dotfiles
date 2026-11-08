@@ -36,6 +36,13 @@
       nixos_tip() { gh api "repos/$repo/branches/nixos" --jq .commit.sha; }
       failed_services() { systemctl --user list-units --type=service --state=failed --plain --no-legend --full | cut -d' ' -f1 | sort; }
 
+      merge_pr() {
+        git clone -q "https://github.com/$repo" "$tmp" &&
+          parent=$(git -C "$tmp" rev-parse HEAD) &&
+          git -C "$tmp" fetch -q origin "pull/$number/head" &&
+          git -C "$tmp" -c user.name=dotfiles-update -c user.email=dotfiles-update@localhost -c commit.gpgsign=false merge -q --no-edit FETCH_HEAD
+      }
+
       # The timer also fires right after resume and before login.
       until systemctl --user -q is-active graphical-session.target; do sleep 60; done
       for _ in {1..20}; do gh api rate_limit >/dev/null 2>&1 && break; sleep 30; done
@@ -66,20 +73,29 @@
       # The notification may have been up for hours; offer the fresh state instead.
       if [ -n "$number" ]; then
         [ "$(gh pr view "$number" -R "$repo" --json state,headRefOid --jq '.state + " " + .headRefOid')" = "OPEN $head" ] || exec "$0"
-        # Only a test merge of the current nixos is what merging will produce.
-        rev=$(gh api "repos/$repo/pulls/$number" --jq 'select(.mergeable == true) | .merge_commit_sha // empty')
-        [ -n "$rev" ] || exec "$0"
-        parent=$(gh api "repos/$repo/commits/$rev" --jq '.parents[0].sha')
-        [ "$parent" = "$(nixos_tip)" ] || exec "$0"
       else
         fetch
         [ "$(origin_rev)" = "$rev" ] || exec "$0"
+        flake="github:$repo/$rev"
       fi
 
       id=$(notify -p "Applying dotfiles update…" "$body")
       export NIX_CONFIG="accept-flake-config = true"
+
+      # GitHub's test merge can lag behind nixos, so merge here: what gets
+      # activated is then exactly what merging the PR will produce.
+      if [ -n "$number" ]; then
+        tmp=$(mktemp -d)
+        trap 'rm -rf "$tmp"' EXIT
+        if ! merge_pr; then
+          notify -u critical -r "$id" "Dotfiles update failed" "Couldn't merge #$number with nixos, nothing was changed. journalctl --user -u dotfiles-update"
+          exit 1
+        fi
+        flake="git+file://$tmp"
+      fi
+
       before=$(failed_services)
-      if ! switch "github:$repo/$rev"; then
+      if ! switch "$flake"; then
         notify -u critical -r "$id" "Dotfiles update failed" "Nothing was merged. journalctl --user -u dotfiles-update"
         exit 1
       fi
