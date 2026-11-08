@@ -19,7 +19,7 @@
     "share/fonts/NotoColorEmoji.ttf" = "${pkgs.noto-fonts-color-emoji}/share/fonts/noto/NotoColorEmoji.ttf";
   };
 
-  jellyfin-mpv-shim = pkgs.jellyfin-mpv-shim.overridePythonAttrs (old: {
+  shimPackage = pkgs.jellyfin-mpv-shim.overridePythonAttrs (old: {
     makeWrapperArgs = (old.makeWrapperArgs or []) ++ ["--prefix" "XDG_DATA_DIRS" ":" "${shimFonts}/share"];
     # The mpv window's app id is com.github.iwalton3.jellyfin-mpv-shim; the
     # desktop entry has to carry that name for Plasma to find its icon.
@@ -34,6 +34,14 @@
       })
     ];
   });
+
+  # The shim runs libmpv in-process, so it needs the same nixGL wrapper as the
+  # mpv binary. With no driver, mpv's failed Wayland EGL probe leaves vo->wl
+  # set and the x11egl probe then aborts on it.
+  jellyfin-mpv-shim =
+    if config.targets.genericLinux.enable
+    then config.lib.nixGL.wrap shimPackage
+    else shimPackage;
 
   # Heavy GPU work: RAVU prescaler, ewa_lanczos (jinc) up/down/chroma scaling,
   # and motion interpolation. Skipped on low-end GPUs that lag at fullscreen.
