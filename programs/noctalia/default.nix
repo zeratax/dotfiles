@@ -10,7 +10,8 @@ in {
   programs.noctalia-shell = {
     enable = true;
     package = noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-      buildInputs = (old.buildInputs or []) ++ [pkgs.qt6.qtwebsockets];
+      # from noctalia's own (pinned) nixpkgs so it matches the Qt it's built with
+      buildInputs = (old.buildInputs or []) ++ [noctalia-shell.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.qt6.qtwebsockets];
     });
     settings = {
       bar = {

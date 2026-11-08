@@ -54,8 +54,15 @@
       # (programs.noctalia-shell → programs.noctalia, plugins/pluginSettings removed,
       # new TOML settings schema). Switch back to main after migrating.
       url = "github:noctalia-dev/noctalia/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-noctalia";
     };
+
+    # noctalia v4 is unmaintained and can't use Qt 6.12: its quickshell fork
+    # (noctalia-qs) doesn't compile against it, and Qt's new global `Color` QML
+    # singleton shadows v4's theme singleton, which blacks out the whole UI
+    # (noctalia-dev/noctalia#4763). This is the last nixpkgs we ran it on, with
+    # Qt 6.11. Drop the pin after migrating to v5.
+    nixpkgs-noctalia.url = "github:nixos/nixpkgs/fe13242281a67641c0102cdb1087f0ebe586c7df";
 
     nirinit = {
       url = "github:amaanq/nirinit";
