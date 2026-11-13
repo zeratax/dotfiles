@@ -4,7 +4,9 @@ without ever seeing them.
 Talks to the running KeePassXC over the Secret Service D-Bus API, so KeePassXC
 itself does the unlocking (quick unlock: face auth or the OS password) and,
 with "Confirm when passwords are retrieved by clients", asks before handing
-out each password. On top of that, every `run` shows a dialog with the entry,
+out each password, on every run (its "Remember" only lasts as long as the
+D-Bus connection, i.e. one agent-kp process). On top of that, every `run`
+shows a dialog with the entry,
 the command and the agent's reason. "Allow for 6 h" skips that dialog for the
 entry (any command) for 6 hours or until reboot, whichever comes first.
 Every decision goes to the journal with the asking session, the command and
@@ -325,9 +327,14 @@ def cmd_run(conn, args):
             die("denied by user", 126)
         if until:
             remember(item.item_path, until)
+    # KeePassXC keeps each item locked per client until it confirms the access
+    # (its prompt comes from unlocking the item); denied, it stays locked
     try:
-        secret = item.get_secret()  # KeePassXC asks here if confirmation is on
-    except secretstorage.exceptions.PromptDismissedException:
+        if item.is_locked():
+            item.unlock()
+        secret = item.get_secret()
+    except (secretstorage.exceptions.PromptDismissedException,
+            secretstorage.exceptions.LockedException):
         log("denied in KeePassXC")
         die("denied in KeePassXC", 126)
     if not secret:

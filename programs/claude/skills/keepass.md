@@ -11,7 +11,8 @@ description: Find entries in Jona's KeePassXC database and use their passwords i
 - If the database is locked, KeePassXC asks Jona to unlock it (face auth or
   password, its own prompt).
 - Each `run` shows Jona a dialog with the entry, the command and your reason.
-  KeePassXC may then confirm the access in its own prompt as well.
+  KeePassXC may then confirm the access in its own prompt as well, on every
+  run: its "Remember" only lasts for one `agent-kp` process.
 - If he picks **Allow for 6 h** (and confirms), later `run`s on that entry skip the dialog,
   whatever the command, for 6 hours or until reboot. `agent-kp` then prints
   `… is allowed until HH:MM, no dialog` to stderr.
