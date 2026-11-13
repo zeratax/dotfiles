@@ -8,17 +8,24 @@ description: Find entries in Jona's KeePassXC database and use their passwords i
 `agent-kp` talks to the running KeePassXC over the Secret Service D-Bus API.
 **You never see a password, and you must keep it that way.**
 
+- `run` and `forget` go through the `agent-kp` user service (socket-activated
+  on `$XDG_RUNTIME_DIR/agent-kp.sock`), which keeps one connection to
+  KeePassXC for the whole login. `search`, `ls` and `info` talk to KeePassXC
+  directly.
 - If the database is locked, KeePassXC asks Jona to unlock it (face auth or
   password, its own prompt).
-- Each `run` shows Jona a dialog with the entry, the command and your reason.
-  KeePassXC may then confirm the access in its own prompt as well, on every
-  run: its "Remember" only lasts for one `agent-kp` process.
-- If he picks **Allow for 6 h** (and confirms), later `run`s on that entry skip the dialog,
-  whatever the command, for 6 hours or until reboot. `agent-kp` then prints
-  `… is allowed until HH:MM, no dialog` to stderr.
+- Each `run` shows Jona a dialog with the entry, the command, your session,
+  the cwd and your reason. The service reads your session and cwd from
+  `/proc` of the `agent-kp` process. KeePassXC may confirm the access in its
+  own prompt as well, but its "Remember" now holds until the service stops.
+- If he picks **Allow for 6 h**, later `run`s on that entry **from your
+  session** (`CLAUDE_CODE_SESSION_ID`) skip the dialog, whatever the command,
+  for 6 hours or until the service stops. Other sessions still ask. `agent-kp`
+  then prints `allowed for this session until HH:MM, no dialog` to stderr.
 - Every `run` and `forget` lands in the journal with your session (title and
-  ID from the Claude environment), the command, the cwd and your reason:
-  `journalctl --user -t agent-kp` (`-o verbose` for all `KP_*` fields).
+  ID), the command, the cwd and your reason: `journalctl --user -t agent-kp`
+  (`-o verbose` for all `KP_*` fields). Service errors:
+  `journalctl --user -u agent-kp`.
 - The password reaches the command via an env var, stdin or a 0600 tmpfs file,
   never argv. Anything the command prints has it replaced by `********`.
 
@@ -66,9 +73,9 @@ are not exposed over Secret Service. Ask Jona if you need one.
   approval), and `search`/`ls`/`info` too if the DB may be locked. Tell him a
   dialog may be waiting. Don't poll; you'll be notified.
 - **A remembered entry is still Jona's call per use.** Give the same honest
-  reason and take the same care. Never create, edit or copy
-  `$XDG_RUNTIME_DIR/agent-kp-allowed.json`. `agent-kp forget` drops every
-  remembered entry; run it when Jona asks.
+  reason and take the same care. Never talk to `agent-kp.sock` yourself, and
+  don't stop, restart or reconfigure the `agent-kp` service or socket.
+  `agent-kp forget` drops every remembered entry; run it when Jona asks.
 - Don't unset or change the `CLAUDE_CODE_*` / `AI_AGENT` variables for
   `agent-kp`: they're how the log and the dialog name your session.
 - **Never make the password visible**: no `echo $SECRET`, `env`, `printenv`,
@@ -82,7 +89,10 @@ are not exposed over Secret Service. Ask Jona if you need one.
 - Don't use `secret-tool`, `keepassxc-cli` or raw D-Bus calls to read
   passwords. They would print them into your context.
 - **The reason is for Jona**: what the command does with the password. Exit
-  126 = denied or dismissed. Don't retry; ask.
+  126 = denied, dismissed or no answer within 15 min. Don't retry; ask.
+- Exit 2 is an error, **not a deny**: e.g. `dialog failed: …` (the dialog
+  couldn't show or crashed) or `agent-kp service not reachable`. Tell Jona
+  the message; don't treat it as his answer.
 - `agent-kp` only reads. To add or change entries, ask Jona.
 - Needs KeePassXC running with Secret Service enabled. If it says "no Secret
   Service" or "no collections", tell Jona.
