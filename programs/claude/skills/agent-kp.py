@@ -5,7 +5,8 @@ Talks to the running KeePassXC over the Secret Service D-Bus API, so KeePassXC
 itself does the unlocking (quick unlock: face auth or the OS password) and,
 with "Confirm when passwords are retrieved by clients", asks before handing
 out each password. On top of that, every `run` shows a dialog with the entry,
-the command and the agent's reason.
+the command and the agent's reason. "Allow for 6 h" skips that dialog for the
+entry (any command) for 6 hours or until reboot, whichever comes first.
 
 Searching only reads entry labels and attributes (path, username, URL), never
 secrets. A password goes to the command via an env var, stdin or a 0600 tmpfs
@@ -15,6 +16,7 @@ This keeps honest mistakes from leaking secrets; it is not a sandbox.
 
 import argparse
 import html
+import json
 import os
 import shlex
 import shutil
@@ -22,12 +24,14 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 
 import secretstorage
 
 KDIALOG = "@kdialog@"
 MASK = b"********"
 SHOWN = ("Path", "UserName", "URL")
+REMEMBER_HOURS = 6
 
 
 def die(msg, code=2):
@@ -89,22 +93,85 @@ def q(s):
     return s.encode("ascii", "backslashreplace").decode()
 
 
+def kdialog(*args):
+    return subprocess.run(
+        [KDIALOG, "--title", "Agent requests a KeePass password", *args],
+        stderr=subprocess.DEVNULL,
+    ).returncode
+
+
 def approve(path, how, argv, reason):
-    text = (
-        f"<html><b>Use the password of</b> <tt>{html.escape(q(path))}</tt><br>"
+    """Ask Jona. Returns when to stop remembering the entry, None if once."""
+    details = (
+        f"<b>Use the password of</b> <tt>{html.escape(q(path))}</tt><br>"
         f"<b>passed via:</b> {html.escape(how)}<br><br>"
         "<b>to run:</b><pre style='white-space:pre-wrap'>"
         f"{html.escape(' '.join(q(a) for a in argv))}</pre>"
         f"<b>in:</b> <tt>{html.escape(q(os.getcwd()))}</tt><br><br>"
-        f"<b>Why:</b><br>{html.escape(reason).replace(chr(10), '<br>')}</html>"
+        f"<b>Why:</b><br>{html.escape(reason).replace(chr(10), '<br>')}"
     )
-    r = subprocess.run(
-        [KDIALOG, "--title", "Agent requests a KeePass password",
-         "--warningyesno", text, "--yes-label", "Allow", "--no-label", "Deny"],
-        stderr=subprocess.DEVNULL,
-    )
-    if r.returncode != 0:
-        die("denied by user", 126)
+    # 0 = Allow once, 1 = Allow for 6 h…, 2 = Deny, Esc or closed
+    rc = kdialog("--warningyesnocancel", f"<html>{details}</html>",
+                 "--yes-label", "Allow once",
+                 "--no-label", f"Allow for {REMEMBER_HOURS} h…",
+                 "--cancel-label", "Deny")
+    if rc == 0:
+        return None
+    # kdialog and Qt also exit 1 on their own errors, so the 6 h choice only
+    # counts after a second, explicit yes
+    until = uptime() + REMEMBER_HOURS * 3600
+    if rc == 1 and kdialog(
+            "--warningyesno",
+            f"<html><b>No more dialogs for this entry until {hhmm(until)}</b> "
+            f"(or reboot), whatever the command.<br><br>{details}</html>",
+            "--yes-label", f"Allow for {REMEMBER_HOURS} h",
+            "--no-label", "Deny") == 0:
+        return until
+    die("denied by user", 126)
+
+
+# Remembered approvals live on the runtime dir's tmpfs and carry the boot id,
+# so they never outlive a reboot. Same uid as the agent, so like the rest of
+# this a guard against mistakes, not a lock.
+def allowed_path():
+    return os.path.join(os.environ["XDG_RUNTIME_DIR"], "agent-kp-allowed.json")
+
+
+def boot_id():
+    with open("/proc/sys/kernel/random/boot_id") as f:
+        return f.read().strip()
+
+
+def uptime():
+    # counts suspend and ignores clock changes; restarts at 0 on reboot
+    return time.clock_gettime(time.CLOCK_BOOTTIME)
+
+
+def hhmm(t):
+    return time.strftime("%H:%M", time.localtime(time.time() + t - uptime()))
+
+
+def load_allowed():
+    """{item path: expiry in uptime()} of the unexpired approvals."""
+    try:
+        with open(allowed_path()) as f:
+            data = json.load(f)
+        if data["boot"] != boot_id():
+            return {}
+        now = uptime()
+        return {k: t for k, t in data["until"].items() if t > now}
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return {}
+
+
+def remember(key, until):
+    allowed = load_allowed()
+    allowed[key] = until
+    fd, tmp = tempfile.mkstemp(
+        prefix=".agent-kp-allowed.", dir=os.environ["XDG_RUNTIME_DIR"])
+    with os.fdopen(fd, "w") as f:
+        json.dump({"boot": boot_id(), "until": allowed}, f)
+    os.replace(tmp, allowed_path())
 
 
 def masked(src, dst, secret):
@@ -156,7 +223,16 @@ def cmd_run(conn, args):
             die(f"run: bad variable name {var}")
 
     item, a = find_one(conn, args.entry)
-    approve(a["Path"], how, [os.path.realpath(prog)] + argv[1:], args.reason)
+    # the D-Bus path names the collection too; UUIDs are only unique per DB
+    until = load_allowed().get(item.item_path)
+    if until:
+        print(f"agent-kp: {a['Path']} is allowed until {hhmm(until)}, "
+              "no dialog", file=sys.stderr)
+    else:
+        until = approve(a["Path"], how, [os.path.realpath(prog)] + argv[1:],
+                        args.reason)
+        if until:
+            remember(item.item_path, until)
     try:
         secret = item.get_secret()  # KeePassXC asks here if confirmation is on
     except secretstorage.exceptions.PromptDismissedException:
@@ -203,6 +279,13 @@ def cmd_run(conn, args):
             os.unlink(tmp)
 
 
+def cmd_forget(conn, args):
+    try:
+        os.unlink(allowed_path())
+    except FileNotFoundError:
+        pass
+
+
 def main():
     p = argparse.ArgumentParser(
         prog="agent-kp",
@@ -227,13 +310,15 @@ def main():
     how.add_argument("--file", metavar="NAME",
                      help="0600 tmpfs file, its path exported as $NAME")
     s.add_argument("command", nargs=argparse.REMAINDER)
+    sub.add_parser("forget", help="drop all entries allowed for "
+                   f"{REMEMBER_HOURS} h, so every run asks again")
     args = p.parse_args()
 
     session_env()
     conn = secretstorage.dbus_init()
     try:
         rc = {"search": cmd_search, "ls": cmd_ls, "info": cmd_info,
-              "run": cmd_run}[args.cmd](conn, args)
+              "run": cmd_run, "forget": cmd_forget}[args.cmd](conn, args)
     finally:
         conn.close()
     sys.exit(rc or 0)

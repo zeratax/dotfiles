@@ -12,6 +12,9 @@ description: Find entries in Jona's KeePassXC database and use their passwords i
   password, its own prompt).
 - Each `run` shows Jona a dialog with the entry, the command and your reason.
   KeePassXC may then confirm the access in its own prompt as well.
+- If he picks **Allow for 6 h** (and confirms), later `run`s on that entry skip the dialog,
+  whatever the command, for 6 hours or until reboot. `agent-kp` then prints
+  `… is allowed until HH:MM, no dialog` to stderr.
 - The password reaches the command via an env var, stdin or a 0600 tmpfs file,
   never argv. Anything the command prints has it replaced by `********`.
 
@@ -57,7 +60,11 @@ are not exposed over Secret Service. Ask Jona if you need one.
 
 - **Run every `run` call with `run_in_background: true`** (it waits for Jona's
   approval), and `search`/`ls`/`info` too if the DB may be locked. Tell him a
-  dialog is waiting. Don't poll; you'll be notified.
+  dialog may be waiting. Don't poll; you'll be notified.
+- **A remembered entry is still Jona's call per use.** Give the same honest
+  reason and take the same care. Never create, edit or copy
+  `$XDG_RUNTIME_DIR/agent-kp-allowed.json`. `agent-kp forget` drops every
+  remembered entry; run it when Jona asks.
 - **Never make the password visible**: no `echo $SECRET`, `env`, `printenv`,
   `set -x`, `cat $FILE`, verbose/debug flags that dump headers, and no writing
   it into files that outlive the command. Masking is a safety net, not
