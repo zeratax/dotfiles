@@ -15,6 +15,9 @@ description: Find entries in Jona's KeePassXC database and use their passwords i
 - If he picks **Allow for 6 h** (and confirms), later `run`s on that entry skip the dialog,
   whatever the command, for 6 hours or until reboot. `agent-kp` then prints
   `… is allowed until HH:MM, no dialog` to stderr.
+- Every `run` and `forget` lands in the journal with your session (title and
+  ID from the Claude environment), the command, the cwd and your reason:
+  `journalctl --user -t agent-kp` (`-o verbose` for all `KP_*` fields).
 - The password reaches the command via an env var, stdin or a 0600 tmpfs file,
   never argv. Anything the command prints has it replaced by `********`.
 
@@ -65,6 +68,8 @@ are not exposed over Secret Service. Ask Jona if you need one.
   reason and take the same care. Never create, edit or copy
   `$XDG_RUNTIME_DIR/agent-kp-allowed.json`. `agent-kp forget` drops every
   remembered entry; run it when Jona asks.
+- Don't unset or change the `CLAUDE_CODE_*` / `AI_AGENT` variables for
+  `agent-kp`: they're how the log and the dialog name your session.
 - **Never make the password visible**: no `echo $SECRET`, `env`, `printenv`,
   `set -x`, `cat $FILE`, verbose/debug flags that dump headers, and no writing
   it into files that outlive the command. Masking is a safety net, not

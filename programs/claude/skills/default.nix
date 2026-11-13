@@ -10,7 +10,7 @@
   kdialog = lib.getExe' pkgs.kdePackages.kdialog "kdialog";
   agent-kp =
     pkgs.writers.writePython3Bin "agent-kp" {
-      libraries = [pkgs.python3Packages.secretstorage];
+      libraries = with pkgs.python3Packages; [secretstorage systemd-python];
       flakeIgnore = ["E501"];
     }
     (builtins.replaceStrings ["@kdialog@"] [kdialog] (builtins.readFile ./agent-kp.py));

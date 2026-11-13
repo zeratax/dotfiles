@@ -7,6 +7,9 @@ with "Confirm when passwords are retrieved by clients", asks before handing
 out each password. On top of that, every `run` shows a dialog with the entry,
 the command and the agent's reason. "Allow for 6 h" skips that dialog for the
 entry (any command) for 6 hours or until reboot, whichever comes first.
+Every decision goes to the journal with the asking session, the command and
+the reason (`journalctl --user -t agent-kp`); users can't delete or edit their
+journal entries there.
 
 Searching only reads entry labels and attributes (path, username, URL), never
 secrets. A password goes to the command via an env var, stdin or a 0600 tmpfs
@@ -15,9 +18,11 @@ This keeps honest mistakes from leaking secrets; it is not a sandbox.
 """
 
 import argparse
+import glob
 import html
 import json
 import os
+import re
 import shlex
 import shutil
 import subprocess
@@ -27,6 +32,7 @@ import threading
 import time
 
 import secretstorage
+from systemd import journal
 
 KDIALOG = "@kdialog@"
 MASK = b"********"
@@ -100,14 +106,15 @@ def kdialog(*args):
     ).returncode
 
 
-def approve(path, how, argv, reason):
-    """Ask Jona. Returns when to stop remembering the entry, None if once."""
+def approve(path, how, argv, reason, asker):
+    """Ask Jona: (decision, when to stop remembering the entry or None)."""
     details = (
         f"<b>Use the password of</b> <tt>{html.escape(q(path))}</tt><br>"
         f"<b>passed via:</b> {html.escape(how)}<br><br>"
         "<b>to run:</b><pre style='white-space:pre-wrap'>"
         f"{html.escape(' '.join(q(a) for a in argv))}</pre>"
-        f"<b>in:</b> <tt>{html.escape(q(os.getcwd()))}</tt><br><br>"
+        f"<b>in:</b> <tt>{html.escape(q(os.getcwd()))}</tt><br>"
+        f"<b>asked by:</b> {html.escape(asker)}<br><br>"
         f"<b>Why:</b><br>{html.escape(reason).replace(chr(10), '<br>')}"
     )
     # 0 = Allow once, 1 = Allow for 6 h…, 2 = Deny, Esc or closed
@@ -116,7 +123,7 @@ def approve(path, how, argv, reason):
                  "--no-label", f"Allow for {REMEMBER_HOURS} h…",
                  "--cancel-label", "Deny")
     if rc == 0:
-        return None
+        return "allowed once", None
     # kdialog and Qt also exit 1 on their own errors, so the 6 h choice only
     # counts after a second, explicit yes
     until = uptime() + REMEMBER_HOURS * 3600
@@ -126,8 +133,83 @@ def approve(path, how, argv, reason):
             f"(or reboot), whatever the command.<br><br>{details}</html>",
             "--yes-label", f"Allow for {REMEMBER_HOURS} h",
             "--no-label", "Deny") == 0:
-        return until
-    die("denied by user", 126)
+        return f"allowed for {REMEMBER_HOURS} h", until
+    return "denied", None
+
+
+# Who is asking, as far as the agent's environment and /proc tell. The agent
+# could fake all of it, so it's for Jona's overview, not proof.
+def caller():
+    host_id = os.environ.get("CLAUDE_CODE_HOST_SESSION_ID", "")
+    return {
+        "SESSION": session_title(host_id),
+        "SESSION_ID": os.environ.get("CLAUDE_CODE_SESSION_ID", ""),
+        "HOST_SESSION_ID": host_id,
+        "AGENT": os.environ.get("AI_AGENT", ""),
+        "PARENTS": parents(),
+    }
+
+
+def session_title(host_id):
+    # the Claude desktop app keeps one JSON per session, title included
+    if not re.fullmatch(r"local_[0-9a-f-]+", host_id):
+        return ""
+    sessions = os.path.expanduser("~/.config/Claude/claude-code-sessions")
+    for p in glob.glob(f"{sessions}/*/*/{host_id}.json"):
+        try:
+            with open(p) as f:
+                return str(json.load(f)["title"])
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
+    return ""
+
+
+def parents(depth=5):
+    """'bash[12] < claude[10] < …': the processes above agent-kp."""
+    chain, pid = [], os.getppid()
+    while pid > 1 and len(chain) < depth:
+        try:
+            # the kernel cuts names at 15 bytes, maybe mid-character
+            with open(f"/proc/{pid}/stat", errors="replace") as f:
+                stat = f.read()
+        except OSError:
+            break
+        # the name sits in parentheses and may contain spaces or ")" itself
+        end = stat.rindex(")")
+        chain.append(f"{stat[stat.index('(') + 1:end]}[{pid}]")
+        pid = int(stat[end + 2:].split()[1])
+    return " < ".join(chain)
+
+
+def label(who):
+    return who["SESSION"] or who["SESSION_ID"] or who["PARENTS"] or "unknown"
+
+
+def utf8(s):
+    # argv, env and paths may carry undecodable bytes (as surrogates), which
+    # the journal binding refuses; log them as \xNN instead
+    return s.encode("utf-8", "surrogateescape").decode("utf-8", "backslashreplace")
+
+
+def audit(decision, who, path="", argv=(), exe="", how="", reason=""):
+    """One journal entry per decision, before any password is fetched."""
+    command = " ".join(q(a) for a in argv)
+    lines = [f"{decision}: {path}" if path else decision]
+    lines[0] += f", asked by {label(who)}"
+    if command:
+        lines.append(command)
+    if reason:
+        lines.append(f"why: {reason}")
+    fields = {
+        "KP_DECISION": decision, "KP_ENTRY": path, "KP_COMMAND": command,
+        "KP_EXE": exe, "KP_HOW": how, "KP_CWD": os.getcwd(),
+        "KP_REASON": reason, **{f"KP_{k}": v for k, v in who.items()},
+    }
+    try:
+        journal.send(utf8("\n".join(lines)), SYSLOG_IDENTIFIER="agent-kp",
+                     **{k: utf8(v) for k, v in fields.items() if v})
+    except (OSError, ValueError) as e:
+        die(f"can't write the journal: {e}")
 
 
 # Remembered approvals live on the runtime dir's tmpfs and carry the boot id,
@@ -223,19 +305,30 @@ def cmd_run(conn, args):
             die(f"run: bad variable name {var}")
 
     item, a = find_one(conn, args.entry)
+    exe = os.path.realpath(prog)
+    who = caller()
+
+    def log(decision):
+        audit(decision, who, a["Path"], argv, exe, how, args.reason)
+
     # the D-Bus path names the collection too; UUIDs are only unique per DB
     until = load_allowed().get(item.item_path)
     if until:
         print(f"agent-kp: {a['Path']} is allowed until {hhmm(until)}, "
               "no dialog", file=sys.stderr)
+        log(f"allowed, remembered until {hhmm(until)}")
     else:
-        until = approve(a["Path"], how, [os.path.realpath(prog)] + argv[1:],
-                        args.reason)
+        decision, until = approve(a["Path"], how, [exe] + argv[1:],
+                                  args.reason, label(who))
+        log(decision)
+        if decision == "denied":
+            die("denied by user", 126)
         if until:
             remember(item.item_path, until)
     try:
         secret = item.get_secret()  # KeePassXC asks here if confirmation is on
     except secretstorage.exceptions.PromptDismissedException:
+        log("denied in KeePassXC")
         die("denied in KeePassXC", 126)
     if not secret:
         die(f"{a['Path']} has an empty password")
@@ -284,6 +377,7 @@ def cmd_forget(conn, args):
         os.unlink(allowed_path())
     except FileNotFoundError:
         pass
+    audit("forgot all remembered entries", caller())
 
 
 def main():
