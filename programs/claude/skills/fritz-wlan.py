@@ -35,6 +35,7 @@ APS = {
 }
 FILTER_CAP = 128
 MAC_RE = re.compile(r"^([0-9a-f]{2}[:-]?){5}[0-9a-f]{2}$", re.I)
+HOSTNAME_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$")
 UUID_RE = re.compile(r"^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$", re.I)
 # settings that must never change as a side effect of a list edit
 GUARDED = ["wpaType", "pmfMode", "isEncInterop", "isolation", "activeMACFilter",
@@ -140,6 +141,9 @@ class Box:
 
     # -- TR-064 ---------------------------------------------------------------
     def rename(self, mac, name):
+        if not HOSTNAME_RE.match(name):
+            # TR-064 answers 402 Invalid Args for spaces, umlauts etc.
+            return f"'{name}' is not a valid hostname (letters, digits, dashes only)"
         if self._tr064 is None:
             self._tr064 = FritzConnection(address=self.host, user=self.user,
                                           password=password(), timeout=15)

@@ -41,8 +41,13 @@ unnamed vendor MACs. `FRITZ_WLAN_KEEP=<mac>,<mac>` protects specific MACs.
   filter) and aborts if anything but the device list changed.
 - Renames go through TR-064 `X_AVM-DE_SetHostNameByMACAddress`, which only the
   5690 (DHCP router) accepts: the 7590 answers `820 Internal Error`, the
-  repeaters `401 Invalid Action`. Names there are cosmetic; the filter only
-  checks MACs.
+  repeaters `401 Invalid Action`. Their web UI won't do it either: its
+  `page=edit_device` reports `name.editable: false` on all three (checked
+  2026-11-14), so don't try to add a web-UI rename. Names there are cosmetic;
+  the filter only checks MACs.
+- New names must be valid hostnames (letters, digits, dashes): spaces or
+  umlauts get `402 Invalid Args`. After a rename, `list` (the wKey device list)
+  can show the old name for a while; the host table has the new one at once.
 - Removing a device that's in use, or switching nothing but the list, never
   touches the Wi-Fi password. Don't hand-craft `page=wKey` POSTs with `apply`:
   that resubmits the whole security form.
