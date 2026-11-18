@@ -79,13 +79,26 @@ in {
     };
   };
 
-  # agent-kp talks to KeePassXC over the Secret Service API, so KWallet must not
-  # claim org.freedesktop.secrets. Apps that use KWallet's own API (Signal and
-  # Vesktop via --password-store=kwallet6) are unaffected. KeePassXC's side
-  # (Settings → Secret Service Integration, plus the exposed group in the
-  # database settings) lives in its mutable ini and the database itself.
+  # KeePassXC is the only Secret Service. KWallet's own daemon (ksecretd) must
+  # not claim org.freedesktop.secrets, and kwalletd6 (6.26 is only a frontend
+  # over the Secret Service) uses KeePassXC instead of ksecretd, so apps on
+  # KWallet's API (Claude desktop, Signal, Vesktop) keep their secrets in
+  # KeePassXC and only KeePassXC needs unlocking. MigrateTo3rdParty copies
+  # each old .kwl wallet over once (asks for its password, keeps the .kwl);
+  # rollback: KSecretD Enabled=true. KeePassXC's side (Settings → Secret
+  # Service Integration, plus the exposed group in the database settings)
+  # lives in its mutable ini and the database itself.
   home.activation.kwalletNoSecretService = lib.hm.dag.entryAfter ["writeBoundary"] ''
     run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
       --file kwalletrc --group org.freedesktop.secrets --key apiEnabled false
+    run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
+      --file kwalletrc --group KSecretD --key Enabled false
+    run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
+      --file kwalletrc --group Migration --key MigrateTo3rdParty true
+    # kwalletd6 finds wallets by Secret Service collection *label*, which in
+    # KeePassXC is the database name, not the file name; with the wrong name it
+    # asks KeePassXC to create that collection (its "new database" wizard)
+    run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
+      --file kwalletrc --group Wallet --key "Default Wallet" zeratax
   '';
 }
