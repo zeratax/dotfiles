@@ -95,10 +95,13 @@ in {
       --file kwalletrc --group KSecretD --key Enabled false
     run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
       --file kwalletrc --group Migration --key MigrateTo3rdParty true
-    # kwalletd6 finds wallets by Secret Service collection *label*, which in
-    # KeePassXC is the database name, not the file name; with the wrong name it
-    # asks KeePassXC to create that collection (its "new database" wizard)
+    # kwalletd6 finds wallets by Secret Service collection label (KeePassXC:
+    # the database name) but, while the database is locked at login, falls
+    # back to the collection's path name (KeePassXC: the file name, pws) and
+    # rewrites Default Wallet with it on every start. Both must be "pws", so
+    # the database is named pws too; with a mismatch kwalletd6 asks KeePassXC
+    # to create that collection (its "new database" wizard).
     run ${lib.getExe' pkgs.kdePackages.kconfig "kwriteconfig6"} \
-      --file kwalletrc --group Wallet --key "Default Wallet" zeratax
+      --file kwalletrc --group Wallet --key "Default Wallet" pws
   '';
 }
